@@ -6,7 +6,7 @@
     <title>叶念西风 个人博客网站</title>
     <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
-    <link rel="stylesheet" media="screen and (min-width:768px)" href="__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__STATIC__/css/main.css" type="text/css">
     <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
 </head>
 <body class="web-body-content">
@@ -180,12 +180,10 @@
             var jsondata = data.field;
             var options = document.getElementById("cate_id").options;
             jsondata.cate_name = options[jsondata.cate_name].text;
-            $.post("{:url('Admin/submitArticle')}",jsondata,function(res){
+            $.post("{:url('Article/submitArticle')}",jsondata,function(res){
                 if(res.status) {
                     layer.msg(res.info,{time:2500});
-                    
-                    setTimeout(function(){window.location.reload();},2500);
-                    
+                    setTimeout(function(){window.location.reload();},2400);
                 }else{
                     layer.msg(res.info,{time:2500});
                 }

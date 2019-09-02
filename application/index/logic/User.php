@@ -8,8 +8,9 @@ class User extends Model{
 
     public function LoginVertify( $data ) {
         $user = \think\Loader::model('User')::get(['email'=>$data['email']]);
+
         if($user){
-            if($user['passwd'] == md5($data['passwd']))
+            if($user['passwd'] == substr(md5($user['id'].$data['passwd']),0,16))
             {
                 Session::set('uname',$user['name']);
                 Session::set('uid',$user['id']);

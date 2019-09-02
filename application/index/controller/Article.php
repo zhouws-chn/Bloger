@@ -3,6 +3,7 @@ namespace app\index\controller;
 
 use app\common\controller\BaseController;
 use think\Session;
+
 class Article extends BaseController
 {
     public function detial()
@@ -70,25 +71,24 @@ class Article extends BaseController
             dump('error.');
             die;
         }
-        $validate = new Validate( [
+        /*$validate = new Validate( [
             'title' => 'require|max:60|min:3',
             'content' => 'require|min:6',
             'cate_name' => 'require|max:16|min:3'
         ]);
 
+
+        if( !$validate->check($data))
+        {
+            $data = ['status'=>false,'info'=>$validate->getError()];
+            return json($data);
+        }*/
         $data=[
             'title' => input('title'),
             'content' => input('ueditor_content'),
             'cate_name' => input('cate_name')
         ];
-        if( !$validate->check($data))
-        {
-            $data = ['status'=>false,'info'=>$validate->getError()];
-            return json($data);
-        }
-
-
-        $article = new Article();
+        $article = \think\Loader::model('Article','logic');
         $res = $article->addArticle($data);
         if( $res['status'] )
         {
