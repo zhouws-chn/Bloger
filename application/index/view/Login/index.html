@@ -11,32 +11,8 @@
 
 </head>
 <body style="background-color: ghostwhite;display: flex;  min-height: 100vh;  flex-direction: column;">
-    <header>
-        <div class="layui-bg-cyan">
-            <div class="layui-container">
-
-                <ul  class="layui-nav layui-bg-cyan" >
-                    <li class="layui-nav-item web_nav_logo">
-                        <a href="{:url('index/index')}" >叶念西风</a>
-                    </li>
-                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-                        <a href="{:url('index/index')}">首页</a>
-                    </li>
-                    {volist name="cates" id="vo"}
-                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
-                        <a href="{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
-                    </li>
-                    {/volist}
-                    <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
-                            <a href="{:url('login/index')}">登陆</a>
-                        </li>
-                    <li class="layui-nav-item layui-layout-right layui-hide-md mobile_nav_bt">
-                        <a href="javascript:;" ><i class="layui-icon layui-icon-more" ></i></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <!-- Header -->
+{include file="tpl/header" /}
 
     <div style="flex: 1; min-height: 320px;">
         <div style="height: 300px; width: 300px; background-color: lightgray; position:relative; margin:10% auto 10% auto;box-shadow: 0 0 1px lightgray;">
@@ -73,16 +49,8 @@
     </div>
 
     <footer>
-        <!-- Footer -->
-        <div class="layui-bg-cyan">
-            <div class="layui-container" style="height: 100px;">
-
-            </div>
-        </div>
-        <div style="text-align: center">
-            Copyright © 2019&nbsp; <a href="./">叶念西风网站</a>&nbsp;&nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
-        </div>
-    </footer>
+    <!-- Footer -->
+    {include file="tpl/footer" /}
 
 <!-- 你的HTML代码 END -->
 

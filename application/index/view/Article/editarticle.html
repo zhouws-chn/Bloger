@@ -10,40 +10,8 @@
     <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
 </head>
 <body class="web-body-content">
-    <header>
-            <div class="layui-bg-cyan">
-                <div class="layui-container">
-    
-                    <ul  class="layui-nav layui-bg-cyan" >
-                        <li class="layui-nav-item web_nav_logo">
-                            <a href="{:url('index/index')}" >叶念西风</a>
-                        </li>
-                        <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block">
-                            <a href="{:url('index/index')}">首页</a>
-                        </li>
-                        {volist name="cates" id="vo"}
-                        <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
-                            <a href="{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
-                        </li>
-                        {/volist}
-                        <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
-                            {if condition=' $Request.session.uname!=null'}
-                            <a href="javascript:;">{$Request.session.uname}</a>
-                            <dl class="layui-nav-child">
-                                    <dd><a href="{:url('Admin/editArticle')}">发布文章</a></dd>
-                                    <dd><a href="{:url('Login/logout')}">退了</a></dd>
-                                </dl>
-                            {else/}
-                            <a href="{:url('Login/index')}">登陆</a>
-                            {/if}
-                        </li>
-                        <li class="layui-nav-item layui-layout-right layui-hide-md mobile_nav_bt">
-                            <a href="javascript:;" ><i class="layui-icon layui-icon-more" ></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </header>
+<!-- Header -->
+{include file="tpl/header" /}
     <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
 
         <i class="fa fa-home"></i> <a href="/">首页</a> <i class="fa fa-angle-right"></i> 编写文章
@@ -51,7 +19,7 @@
 
     <div class="layui-container article_detial" style="background-color: #fffFFF">
 
-        <form class="layui-form layui-form-pane" >
+        <form class="layui-form" >
             <div class="layui-form-item">
                 <label class="layui-form-label">标题</label>
                 <div class="layui-input-block">
@@ -79,10 +47,6 @@
                     </div>
                     
                 </div>
-                <div class="layui-upload" style="display: flex; ">
-                    <button type="button" class="layui-btn" id="test1">上传略缩图</button>
-                    <img class="layui-upload-img" id="demo1" style="max-width: 320px; max-height:240px;margin-left: 20px;">
-                </div>   
             </div>
             <div class="layui-form-item layui-form-text" >
                 <div class="layui-input-block" style="z-index:1;">
@@ -92,7 +56,7 @@
             </div>
 
 
-            <div class="layui-form-item">
+            <div class="layui-form-item " style="margin-left: 110px;">
                 <button class="layui-btn" lay-submit lay-filter="publish_bt">发布</button>
                 <button class="layui-btn" lay-submit lay-filter="draft_bt">存草稿</button>
             </div>
@@ -101,16 +65,7 @@
 
     </div>
     <!-- Footer -->
-    <footer>
-        <div class="layui-bg-cyan">
-            <div class="layui-container" style="height: 100px;">
-
-            </div>
-        </div>
-        <div style="text-align: center">
-            Copyright © 2019&nbsp; <a href="./">叶念西风网站</a>&nbsp;&nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
-        </div>
-    </footer>
+    {include file="tpl/footer" /}
 <!-- 你的HTML代码 END -->
 
 
@@ -207,31 +162,18 @@
         var txt = ue.getContentTxt();
     });
     //一般直接写在一个js文件中
-    layui.use(['layer', 'form','element','util','upload'], function(){
+    layui.use(['layer', 'form','element','util'], function(){
         var layer = layui.layer
             ,$=layui.jquery
             ,form = layui.form
             ,element = layui.element
-            ,util = layui.util
-            ,upload = layui.upload;
+            ,util = layui.util;
 
         //执行
         util.fixbar({
             top: true
             ,showHeight:100
             ,click: function(type){ }
-        });
-
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#article_title_img' //绑定元素
-            ,url: '/upload/' //上传接口
-            ,done: function(res){
-                //上传完毕回调
-            }
-            ,error: function(){
-                //请求异常回调
-            }
         });
 
         form.on('submit(publish_bt)',function(data){
@@ -250,50 +192,8 @@
             });
             return false;
         });
-        //普通图片上传
-        var uploadInst = upload.render({
-            elem: '#test1'
-            ,url: false
-            ,auto: false
-            ,size: 512
-            ,choose: function(obj){
-            //预读本地文件示例，不支持ie8
-            obj.preview(function(index, file, result){
-                $('#demo1').attr('src', result); //图片链接（base64）
-            });
-            }
-            ,done: function(res){
-            //如果上传失败
-            if(res.code > 0){
-                return layer.msg('上传失败');
-            }
-            //上传成功
-            }
-            ,error: function(){
-            //演示失败状态，并实现重传
-            var demoText = $('#demoText');
-            demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
-            demoText.find('.demo-reload').on('click', function(){
-                uploadInst.upload();
-            });
-            }
-        });
-  
-
     });
 
-    var image = '';
-    function selectImg(file) {
-        if(!file.files || !file.files[0]){
-            return ;
-        }
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-            document.getElementById('title_img_2').src = evt.target.result;
-            image=evt.target.result;
-        }
-        reader.readAsDataURL(file.files[0]);
-    }
 </script>
 </body>
 </html>

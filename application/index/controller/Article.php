@@ -2,7 +2,7 @@
 namespace app\index\controller;
 
 use app\common\controller\BaseController;
-
+use think\Session;
 class Article extends BaseController
 {
     public function detial()
@@ -37,7 +37,87 @@ class Article extends BaseController
         if(!$articles) {
             return $this->error('没有文章');
         }
+        foreach ($articles as $article )
+        {
+            $this->assign('cate_name',$article['cate_name']);
+            break;
+        }
         $this->assign('articles',$articles);
         return $this->fetch('list');
+    }
+
+    // 以下代码  需要添加登陆权限验证
+
+    private  function LoginVerify(){
+        if(!Session::has('uname'))
+        {
+            $this->error('您还没有登陆,请先登陆',url('/index/Login/index'));
+        }
+    }
+
+    public function editArticle()
+    {
+        $this->LoginVerify();
+        return $this->fetch('editarticle');
+    }
+
+    public function submitArticle()
+    {
+        $this->LoginVerify();
+        // 去掉非post请求
+        if(!request()->isPost())
+        {
+            dump('error.');
+            die;
+        }
+        $validate = new Validate( [
+            'title' => 'require|max:60|min:3',
+            'content' => 'require|min:6',
+            'cate_name' => 'require|max:16|min:3'
+        ]);
+
+        $data=[
+            'title' => input('title'),
+            'content' => input('ueditor_content'),
+            'cate_name' => input('cate_name')
+        ];
+        if( !$validate->check($data))
+        {
+            $data = ['status'=>false,'info'=>$validate->getError()];
+            return json($data);
+        }
+
+
+        $article = new Article();
+        $res = $article->addArticle($data);
+        if( $res['status'] )
+        {
+            $data = ['status'=>true,'info'=>'添加成功'];
+
+        }else{
+            $data = ['status'=>false,'info'=>$res['msg']];
+
+        }
+        return json($data);
+    }
+    public function delete()
+    {
+        $this->LoginVerify();
+        // 去掉非get请求
+        if(!request()->isPost())
+        {
+            dump('error.');
+            die;
+        }
+
+        $article_id = input('id');
+        $article = \think\Loader::model('Article')::get(['id'=>$article_id]);
+        $res = $article->delete();
+        if($res) {
+            $data = ['status'=>true,'info'=>'删除成功'];
+            return json($data);
+        }
+        $data = ['status'=>false,'info'=>'删除失败'];
+        return json($data);
     }
 }
