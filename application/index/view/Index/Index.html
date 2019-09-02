@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>叶念西风 个人博客网站</title>
+    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:768px)" href="__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+</head>
+<body class="web-body-content">
+    <header>
+        <div class="layui-bg-cyan">
+            <div class="layui-container">
+
+                <ul  class="layui-nav layui-bg-cyan" >
+                    <li class="layui-nav-item web_nav_logo">
+                        <a href="{:url('index/index')}" >叶念西风</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block">
+                        <a href="{:url('index/index')}">首页</a>
+                    </li>
+                    {volist name="cates" id="vo"}
+                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                        <a href="{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
+                    </li>
+                    {/volist}
+                    <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                        {if condition=' $Request.session.uname!=null'}
+                        <a href="javascript:;">{$Request.session.uname}</a>
+                        <dl class="layui-nav-child">
+                                <dd><a href="{:url('Admin/editArticle')}">发布文章</a></dd>
+                                <dd><a href="{:url('Login/logout')}">退了</a></dd>
+                            </dl>
+                        {else/}
+                        <a href="{:url('Login/index')}">登陆</a>
+                        {/if}
+                    </li>
+                    <li class="layui-nav-item layui-layout-right layui-hide-md mobile_nav_bt">
+                        <a href="javascript:;" ><i class="layui-icon layui-icon-more" ></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="layui-container carousel-news" >
+
+        <div class="layui-carousel" id="carousel_news">
+            <i class="fa fa-volume-down"></i>
+            <div carousel-item>
+                <div><a href="javascript:;">网站正在开发中......</a></div>
+                <div><a href="javascript:;">首页即将完成,敬请期待!!!!</a></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-container carousel-big-news" id="carousel_div">
+        <div class="layui-carousel" id="carousel_index">
+            <div carousel-item>
+                <div><a href=""><img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg" ></a></div>
+                <div><a href=""><img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg"></a></div>
+                <div><a href=""><img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg"></a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-container">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md8">
+                {volist name="articles" id="vo"}
+                <div class="web-article-item">
+                    <div class="layui-card-body" style="display: flex;">
+                        <div class="article_img layui-hide-xs">
+                            <img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg">
+                        </div>
+                        <div class="article_item">
+                            <p class="article_title"> <a href="{:url('article/detial',array('id'=>$vo['id']))}">{$vo.title}</a></p>
+                            <div class="article_abstract layui-hide-xs">
+                               一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十
+                            </div>
+                            <div class="article_info">
+                                <item1>
+                                    <i class="layui-icon layui-icon-note"></i> <a href="{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
+                                </item1>
+                                <item1>
+                                    <i class="layui-icon layui-icon-date"></i> {$vo.update_time|date='Y-m-d',###}
+                                </item1>
+                                <item1>
+                                    <i class="layui-icon layui-icon-read"></i> {$vo.pv}
+                                </item1>
+                                <item1>
+                                    <i class="layui-icon layui-icon-reply-fill"></i> 0
+                                </item1>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                {/volist}
+                <div class="web-article-item">
+                    <div class="layui-card-body" style="display: flex;">
+                        <div class="article_img layui-hide-xs">
+                            <img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg">
+                        </div>
+                        <div class="article_item">
+                            <a href="./article.html" class="article_title">使用ASP.NET Core SignalR搭建聊天室</a>
+                            <div class="article_abstract layui-hide-xs">
+                                一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十
+                            </div>
+                            <div class="article_info">
+                                <item1>
+                                    <i class="layui-icon layui-icon-note"></i> <a href="{:url('article/cate',array('id'=>$vo['cate_id']))}">深度学习</a>
+                                </item1>
+                                <item1>
+                                    <i class="layui-icon layui-icon-date"></i> 2019-08-30
+                                </item1>
+                                <item1>
+                                    <i class="layui-icon layui-icon-read"></i> 256
+                                </item1>
+                                <item1>
+                                    <i class="layui-icon layui-icon-reply-fill"></i> 30
+                                </item1>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 侧边栏 手机不显示 -->
+            <div class="layui-col-md4 layui-hide-xs layui-hide-sm layui-show-md-inline-block index-sidebar">
+                <div class="layui-card web-blogger-info">
+                    <div class="layui-card-body">
+                        <div class = "web-blogger-logo">
+                            <img src="1.png">
+                        </div>
+                        <div class="web-blogger-name">
+                            <p>叶念西风</p>
+                        </div>
+
+                        <p style="margin-top: 14px;">秋风别叶，叶念西风。</p>
+
+
+                        <ul class="my_contact">
+                            <li >
+                                <a href=""> <i class="fa fa-weixin"></i></a>
+                            </li>
+                            <li >
+                                <a href=""> <i class="fa fa-qq"></i></a>
+                            </li>
+                            <li >
+                                <a href="https://github.com/zhouws-chn"> <i class="fa fa-github"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="layui-card index-recommand">
+                    <div class="layui-card-header"><i class="layui-icon layui-icon-component" ></i>推荐栏目</div>
+                    <div class="layui-card-body">
+                        <ul>
+                            {volist name="cates" id="vo"}
+                            <li >
+                                <a href="{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 侧边栏 手机不显示 END -->
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="layui-bg-cyan">
+            <div class="layui-container" style="height: 100px;">
+
+            </div>
+        </div>
+        <div style="text-align: center">
+            Copyright © 2019&nbsp; <a href="./">叶念西风网站</a>&nbsp;&nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
+        </div>
+    </footer>
+
+<!-- 你的HTML代码 END -->
+
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    //一般直接写在一个js文件中
+    layui.use(['layer', 'form','element','util','carousel'], function(){
+        var layer = layui.layer
+            ,form = layui.form
+            ,element = layui.element
+            ,carousel = layui.carousel
+            ,util = layui.util;
+
+        //执行
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+        //建造实例
+        carousel.render({
+            elem: '#carousel_index'
+            ,width: '100%' //设置容器宽度
+            ,height:'220px'
+            ,arrow: 'hover'//悬停显示箭头
+            //,anim: 'updown' //切换动画方式
+            ,indicator:'none'
+            ,interval:'5000'
+        });
+        change_carousel_div();
+        carousel.render({
+            elem: '#carousel_news'
+            ,width: '100%' //设置容器宽度
+            ,height:'20px'
+            ,arrow: 'none'//不显示箭头
+            ,anim: 'updown' //切换动画方式
+            ,indicator:'none'
+        });
+
+
+
+    });
+
+    window.onresize = function () {
+        change_carousel_div();
+    }
+
+    function change_carousel_div(){
+        var o = document.getElementById("carousel_div");
+        var w = o.clientWidth*0.2;
+        var obj = document.getElementById("carousel_index");
+        obj.style.height= w+'px';
+    }
+</script>
+</body>
+</html>

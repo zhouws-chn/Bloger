@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>登陆</title>
+    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:768px)" href="__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+
+</head>
+<body style="background-color: ghostwhite;display: flex;  min-height: 100vh;  flex-direction: column;">
+    <header>
+        <div class="layui-bg-cyan">
+            <div class="layui-container">
+
+                <ul  class="layui-nav layui-bg-cyan" >
+                    <li class="layui-nav-item web_nav_logo">
+                        <a href="{:url('index/index')}" >叶念西风</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block">
+                        <a href="{:url('index/index')}">首页</a>
+                    </li>
+                    {volist name="cates" id="vo"}
+                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                        <a href="{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
+                    </li>
+                    {/volist}
+                    <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                            <a href="{:url('login/index')}">登陆</a>
+                        </li>
+                    <li class="layui-nav-item layui-layout-right layui-hide-md mobile_nav_bt">
+                        <a href="javascript:;" ><i class="layui-icon layui-icon-more" ></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div style="flex: 1; min-height: 320px;">
+        <div style="height: 300px; width: 300px; background-color: lightgray; position:relative; margin:10% auto 10% auto;box-shadow: 0 0 1px lightgray;">
+            <form class="layui-form" action="">
+                <div style="text-align: center; height: 80px;"><p style="padding-top: 20px; font-size: 24px;">登陆</p></div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="width: 60px;">邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="email" name="email" required  lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" >
+                    <label class="layui-form-label" style="width: 60px;">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" required lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" >
+                    <div class="layui-input-inline" style="margin-left: 90px;width:65px;">
+                        <input type="text" name="verify_code"  placeholder="验证码" lay-verify="required|verifycode" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline" style="margin-left: 90px; width: 230px;">
+                        <button class="layui-btn" lay-submit lay-filter="login">登陆</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+
+                        <label style="width: 40px; background-color:lightgray; font-size: 28px;margin-left: 10px;padding-top: 10px;"><i class="fa fa-weixin"></i></label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <footer>
+        <!-- Footer -->
+        <div class="layui-bg-cyan">
+            <div class="layui-container" style="height: 100px;">
+
+            </div>
+        </div>
+        <div style="text-align: center">
+            Copyright © 2019&nbsp; <a href="./">叶念西风网站</a>&nbsp;&nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
+        </div>
+    </footer>
+
+<!-- 你的HTML代码 END -->
+
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script>
+
+    //一般直接写在一个js文件中
+    layui.use(['layer', 'form','element','util','upload'], function(){
+        var layer = layui.layer
+            ,$=layui.jquery
+            ,form = layui.form
+            ,element = layui.element
+            ,util = layui.util;
+
+        //执行
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+        form.verify({
+            pass:[
+                /^[\S]{6,18}$/
+                ,'密码必须是6到18位,且不能出现空格'
+            ]
+            ,verifycode:[
+                /^[\S]{4,6}$/
+                ,'验证码必须是4到6位,且不能出现空格'
+            ]
+        });
+
+        form.on('submit(login)',function(data){
+            $.post("{:url('Login/login')}",data.field,function(res){
+                if(res.status) {
+                    layer.msg(res.info,{time:2500});
+                    if(document.referrer==""){
+                        setTimeout(function(){window.location.href="/";},2500);
+                    }else{
+                        setTimeout(function(){window.location.href=document.referrer;},2500);
+                    }
+                    
+                }else{
+                    layer.msg(res.info,{time:2500});
+                }
+            });
+            return false;
+        });
+
+
+
+    });
+</script>
+</body>
+</html>

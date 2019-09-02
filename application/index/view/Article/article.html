@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$article.title}-叶念西风 个人博客网站</title>
+    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:768px)" href="__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" href="__STATIC__/plugins/ueditor/themes/default/preview.css"  type="text/css">
+</head>
+<body class="web-body-content">
+    <header>
+        <div class="layui-bg-cyan">
+            <div class="layui-container">
+
+                <ul  class="layui-nav layui-bg-cyan" >
+                    <li class="layui-nav-item web_nav_logo">
+                        <a href="{:url('index/index')}" >叶念西风</a>
+                    </li>
+                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block">
+                        <a href="{:url('index/index')}">首页</a>
+                    </li>
+                    {volist name="cates" id="vo"}
+                    <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                        <a href="{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
+                    </li>
+                    {/volist}
+                    <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                        {if condition=' $Request.session.uname!=null'}
+                        <a href="javascript:;">{$Request.session.uname}</a>
+                        <dl class="layui-nav-child">
+                                <dd><a href="{:url('Admin/editArticle')}">发布文章</a></dd>
+                                <dd><a href="{:url('Login/logout')}">退了</a></dd>
+                            </dl>
+                        {else/}
+                        <a href="{:url('Login/index')}">登陆</a>
+                        {/if}
+                    </li>
+                    <li class="layui-nav-item layui-layout-right layui-hide-md mobile_nav_bt">
+                        <a href="javascript:;" ><i class="layui-icon layui-icon-more" ></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
+
+        <i class="fa fa-home"></i> <a href="{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> <a href="{:url('article/cate',array('id'=>$article['cate_id']))}">{$article.cate_name}</a> <i class="fa fa-angle-right"></i> {$article.title}
+    </div>
+
+    <div class="layui-container article_detial" style="background-color: #fffFFF">
+        <header style="font-size: 32px;">
+            <h1>{$article.title}</h1>
+        </header>
+        <div class="article_detial_info">
+            <div style="margin-left: 20px;">
+                <i class="layui-icon layui-icon-date" style="font-size: 14px; color: gray;"></i> {$article.update_time|date='Y-m-d',###}
+            </div>
+            <div style="margin-left: 20px;">
+                <i class="layui-icon layui-icon-read" style="font-size: 14px; color: gray;"></i> {$article.pv}
+            </div>
+            <div style="margin-left: 20px;">
+                <i class="layui-icon layui-icon-reply-fill" style="font-size: 14px; color: gray;"></i> 0
+            </div>
+
+        </div>
+
+        <div class="article_content">{$article.content}</div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="layui-bg-cyan">
+            <div class="layui-container" style="height: 100px;">
+
+            </div>
+        </div>
+        <div style="text-align: center">
+            Copyright © 2019&nbsp; <a href="./">叶念西风网站</a>&nbsp;&nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
+        </div>
+    </footer>
+<!-- 你的HTML代码 END -->
+
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    //一般直接写在一个js文件中
+    layui.use(['layer', 'form','element','util','carousel'], function(){
+        var layer = layui.layer
+            ,form = layui.form
+            ,element = layui.element
+            ,carousel = layui.carousel
+            ,util = layui.util;
+
+        //执行
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+        //建造实例
+        carousel.render({
+            elem: '#carousel_index'
+            ,width: '100%' //设置容器宽度
+            ,height:'240px'
+            ,arrow: 'hover'//悬停显示箭头
+            //,anim: 'updown' //切换动画方式
+            ,indicator:'inside'
+            ,interval:'5000'
+        });
+        carousel.render({
+            elem: '#carousel_news'
+            ,width: '100%' //设置容器宽度
+            ,height:'20px'
+            ,arrow: 'none'//不显示箭头
+            ,anim: 'updown' //切换动画方式
+            ,indicator:'none'
+        });
+
+    });
+</script>
+</body>
+</html>
