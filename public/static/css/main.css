@@ -1,0 +1,245 @@
+.web-body-content{
+background-color: ghostwhite;
+}
+
+.web-body-content footer{
+margin-top:20px;
+}
+
+.web-body-content header ul{
+padding-left:0px;
+}
+
+.web-body-content header ul li a{
+padding-left:0px;
+}
+
+.web-body-content .carousel-news{
+margin-top:8px;
+margin-bottom:10px;
+}
+.web-body-content .carousel-news .layui-carousel{
+display: flex;
+}
+
+.web-body-content .carousel-news .layui-carousel i{
+font-size: 14px; 
+margin-top: 3px;
+margin-right: 6px;
+}
+
+.carousel-big-news{
+margin-bottom:10px;
+}
+
+.carousel-big-news .layui-carousel a img{
+max-height:100% ;
+max-width:100%;
+}
+
+.web-article-item{
+background-color: #fffFFF;
+box-shadow: 0 0 1px lightgray;
+height:155px;
+}
+
+.web-article-item .article_info{
+position: absolute; 
+bottom: 8px; 
+display: flex;
+white-space:nowrap;
+}
+
+.web-article-item .article_info item1{
+margin-right: 20px;
+min-width:42px;
+}
+
+.web-article-item .article_info i{
+font-size: 14px; 
+color: gray;
+}
+
+.web-article-item .article_item{
+    margin-left: 10px;
+    width:calc(70% - 10px);
+    display:inline;
+}
+
+
+.web-article-item .article_title{
+    font-size: 20px;
+    width: 100%;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow : ellipsis;
+}
+.web-article-item .article_img{
+    width: 30%;
+    height:135px;
+}
+.web-article-item .article_img img{
+    width:100%;
+    height:100%;
+}
+.web-article-item .article_item .article_abstract{
+    height: 75px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: gray;
+    overflow:hidden;
+}
+.admin-web-article-item{
+    background-color: #fffFFF;
+    box-shadow: 0 0 1px lightgray;
+}
+.admin-web-article-item .article_item{
+    margin-left: 10px;
+    margin-bottom: 10px;
+    white-space:nowrap;
+}
+.admin-web-article-item .article_title{
+    font-size: 20px;
+    width: 100%;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow : ellipsis;
+}
+
+.admin-layui-card-body{
+    position: relative;
+    padding: 10px 15px;
+    line-height: 24px;
+}
+.admin-article-power{
+    display: flex;
+    margin-top: 10px;
+}
+
+.admin-article-power button{
+    margin-left: 10px;
+}
+
+.index-sidebar{
+
+}
+.index-sidebar .web-blogger-info{
+
+}
+.index-sidebar .web-blogger-info .layui-card-body{
+text-align: center;
+}
+.index-sidebar .web-blogger-info .layui-card-body .web-blogger-logo{
+width: 100%; 
+text-align: center;
+}
+.index-sidebar .web-blogger-info .layui-card-body .web-blogger-logo img{
+width:90px;
+height:90px;
+}
+.index-sidebar .web-blogger-info .layui-card-body .web-blogger-name{
+width: 100%; 
+text-align: center;
+margin-top: 10px;
+}
+.index-sidebar .web-blogger-info .layui-card-body .web-blogger-name p{
+font-size: 24px;
+}
+.index-recommand{
+}
+.index-recommand .layui-card-header{
+font-size: 16px; 
+}
+.index-recommand .layui-card-header i{
+font-size: 20px;  
+color: gray; 
+margin-right: 6px;
+}
+.index-recommand .layui-card-body{
+text-align: center;
+}
+.index-recommand .layui-card-body ul li{
+display:inline-block;
+}
+.index-recommand .layui-card-body ul li a{
+display:inline-block;
+padding:10px 30px;
+box-shadow: 0 0 1px lightgray;
+}
+.index-recommand .layui-card-body ul li a i{ 
+margin-right: 10px;
+}
+.layui-nav .layui-nav-item a:hover{
+background-color:lightgreen;
+}
+.layui-nav .layui-this:after,.layui-nav-bar,.layui-nav-tree .layui-nav-itemed:after{
+left:0;top:0;width:0;height:0px;}
+
+.layui-nav .web_nav_logo{
+padding-right:40px;
+}
+.layui-nav .web_nav_logo a{
+padding:0 0px;
+color:#ffffff;
+font-size:24px;
+font-family:KaiTi;
+}
+.layui-nav .web_nav_logo a:hover{
+background-color:rgb(47,64,86);
+}
+.layui-nav .mobile_nav_bt:after{
+padding:0 0px;
+}
+.layui-nav .mobile_nav_bt a{
+padding-bottom:0px;
+padding-right:0px;
+height:60px;
+}
+.layui-nav .mobile_nav_bt a:hover{
+background-color:rgb(47,64,86);
+}
+
+.layui-nav .mobile_nav_bt a i{
+font-size: 25px; 
+color: #fffFFF;
+}
+
+
+
+
+
+.my_contact{
+margin-top:20px;
+}
+.my_contact li{
+display:inline-block;
+margin: 0 10px;
+}
+.my_contact li a{
+display:inline-block;
+padding:10px 10px;
+box-shadow: 0 0 1px lightgray;
+}
+.my_contact li a i{
+font-size:20px;
+
+}
+
+.article_detial header{
+text-align:center;
+padding:30px 0px;
+}
+
+.article_detial .article_detial_info{
+text-align:center;
+display: flex;
+justify-content:center;
+width:100%;
+font-size:14px;
+}
+
+.article_detial .article_content{
+font-size:16px;
+line-height:34px;
+padding:20px 0px;
+}

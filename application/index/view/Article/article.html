@@ -41,7 +41,7 @@
     <div class="layui-container admin-article-power" style="background-color: ghostwhite;margin-top: 20px;">
         {if condition=' $Request.session.uname!=null'}
 
-        <button >修改</button> <button>略缩图</button> <button lay-submit lay-filter="deleteArticle">删除</button>
+        <a href="{:url('article/updateArticle',array('id'=>$article['id']))}" >修改</a> <button>略缩图</button> <button lay-submit lay-filter="deleteArticle">删除</button>
 
         {/if}
     </div>

@@ -62,6 +62,25 @@ class Article extends BaseController
         return $this->fetch('editarticle');
     }
 
+    public function updateArticle()
+    {
+        $this->LoginVerify();
+
+        // 去掉非get请求
+        if(!request()->isGet())
+        {
+            dump('error.');
+            die;
+        }
+        $article_id = input('id');
+        $article = \think\Loader::model('Article')::get(['id'=>$article_id]);
+        if(!$article) {
+            return $this->error('没有文章');
+        }
+        $this->assign('article',$article);
+        return $this->fetch('updatearticle');
+    }
+
     public function submitArticle()
     {
         $this->LoginVerify();
@@ -71,18 +90,6 @@ class Article extends BaseController
             dump('error.');
             die;
         }
-        /*$validate = new Validate( [
-            'title' => 'require|max:60|min:3',
-            'content' => 'require|min:6',
-            'cate_name' => 'require|max:16|min:3'
-        ]);
-
-
-        if( !$validate->check($data))
-        {
-            $data = ['status'=>false,'info'=>$validate->getError()];
-            return json($data);
-        }*/
         $data=[
             'title' => input('title'),
             'content' => input('ueditor_content'),
@@ -93,6 +100,34 @@ class Article extends BaseController
         if( $res['status'] )
         {
             $data = ['status'=>true,'info'=>'添加成功'];
+
+        }else{
+            $data = ['status'=>false,'info'=>$res['msg']];
+
+        }
+        return json($data);
+    }
+
+    public function changeArticle()
+    {
+        $this->LoginVerify();
+        // 去掉非post请求
+        if(!request()->isPost())
+        {
+            dump('error.');
+            die;
+        }
+        $data=[
+            'id' => input('id'),
+            'title' => input('title'),
+            'content' => input('ueditor_content'),
+            'cate_name' => input('cate_name')
+        ];
+        $article = \think\Loader::model('Article','logic');
+        $res = $article->updateArticle($data);
+        if( $res['status'] )
+        {
+            $data = ['status'=>true,'info'=>'修改成功'];
 
         }else{
             $data = ['status'=>false,'info'=>$res['msg']];
