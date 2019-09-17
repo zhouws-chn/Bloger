@@ -79,20 +79,7 @@
 <script src="__STATIC__/plugins/layui/layui.js"></script>
 <script>
 
-    tinymce.init({
-        selector: "textarea#article_container",
-        language:"zh_CN",
-        menubar: false,
-        height: this.height,
-        plugins: [
-            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
-            "searchreplace wordcount visualblocks visualchars code codesample fullscreen insertdatetime media nonbreaking",
-            "save table contextmenu directionality emoticons template paste textcolor advcode autoresize"
-        ],
-        toolbar: "formatselect | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample link emoticons image media  preview | code ",
-        autoresize_on_init: false,
-        min_height: 350,
-    });
+
     //一般直接写在一个js文件中
     layui.use(['layer', 'form','element','util'], function(){
         var layer = layui.layer
@@ -100,6 +87,48 @@
             ,form = layui.form
             ,element = layui.element
             ,util = layui.util;
+
+        tinymce.init({
+            selector: "textarea#article_container",
+            language:"zh_CN",
+            menubar: false,
+            height: this.height,
+            plugins: [
+                "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker powerpaste",
+                "searchreplace wordcount visualblocks visualchars code codesample fullscreen insertdatetime media nonbreaking",
+                "save table contextmenu directionality emoticons template textcolor autoresize"
+            ],
+            toolbar: "formatselect | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample link emoticons image media  preview | code ",
+            autoresize_on_init: false,
+            min_height: 350,
+            powerpaste_word_import: 'propmt',// 参数可以是propmt, merge, clear，效果自行切换对比
+            powerpaste_html_import: 'merge',// propmt, merge, clear
+            powerpaste_allow_local_images: true,
+            paste_data_images: true,
+            images_upload_handler: function (blobInfo, success, failure) {
+                // 这个函数主要处理word中的图片，并自动完成上传；
+                // ajaxUpload是自己定义的一个函数；在回调中，记得调用success函数，传入上传好的图片地址；
+                // blobInfo.blob() 得到图片的file对象；
+                var formData = new FormData();
+                formData.append('file', blobInfo.blob(),blobInfo.filename());
+                $.ajax({
+                    type : "POST",
+                    url : "{:url('Article/submitArticleImage')}",
+                    data : formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success : function(res) {
+                        if(res.status){
+                            success('\\static\\uploads\\images\\'+res.info);
+                        }else{
+                            layer.msg(res.info,{time:2500});
+                        }
+                    }
+                });
+            },
+        });
 
         //执行
         util.fixbar({

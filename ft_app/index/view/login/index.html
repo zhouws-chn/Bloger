@@ -19,25 +19,25 @@
             <form class="layui-form" action="">
                 <div style="text-align: center; height: 80px;"><p style="padding-top: 20px; font-size: 24px;">登陆</p></div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label" style="width: 60px;">邮箱</label>
+                    <label class="layui-form-label" style="width: 48px;font-size: 16px;">邮箱</label>
                     <div class="layui-input-inline">
                         <input type="email" name="email" required  lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item" >
-                    <label class="layui-form-label" style="width: 60px;">密码</label>
+                    <label class="layui-form-label" style="width: 48px;font-size: 16px;">密码</label>
                     <div class="layui-input-inline">
                         <input type="password" name="password" required lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item" >
-                    <div class="layui-input-inline" style="margin-left: 90px;display: flex;">
+                    <div class="layui-input-inline" style="margin-left: 78px;display: flex;">
                         <input type="text" name="verify_code"  placeholder="验证码" lay-verify="required|verifycode" autocomplete="off" class="layui-input" style="width: 80px;">
                         <img src="{:captcha_src()}" class="verify" onclick="javascript:this.src='{:captcha_src()}?rand='+Math.random()" alt="验证码"  style="margin-left: 10px;" />
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <div class="layui-input-inline" style="margin-left: 90px; width: 230px;">
+                    <div class="layui-input-inline" style="margin-left: 78px; width: 230px;">
                         <button class="layui-btn" lay-submit lay-filter="login">登陆</button>
                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
 

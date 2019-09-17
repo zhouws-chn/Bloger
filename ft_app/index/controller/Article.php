@@ -3,6 +3,7 @@ namespace app\index\controller;
 
 use app\common\controller\BaseController;
 use think\Session;
+use \think\File;
 
 class Article extends BaseController
 {
@@ -105,6 +106,32 @@ class Article extends BaseController
         }else{
             $data = ['status'=>false,'info'=>$res['msg']];
 
+        }
+        return json($data);
+    }
+
+    public function submitArticleImage()
+    {
+        $this->LoginVerify();
+        // 去掉非post请求
+        if(!request()->isPost())
+        {
+            dump('error.');
+            die;
+        }
+        $file =request()->file("file");
+        $data = [];
+        if(empty($file))
+        {
+            $data = ['status'=>false,'info'=>'没有有效数据'];
+            return json($data);
+        }
+        $info = $file->validate(['size'=>156780,'ext'=>'jpeg,jpg,png,gif'])->move(ROOT_PATH . 'public/static' . DS . 'uploads/images');//图片保存路径
+        if ($info) {
+
+            $data = ['status'=>true,'info'=>$info->getSaveName()];
+        }else{
+            $data = ['status'=>false,'info'=>$file->getError()];
         }
         return json($data);
     }
