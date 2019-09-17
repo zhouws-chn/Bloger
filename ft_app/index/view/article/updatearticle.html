@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>修改文章-{$article.title}-叶念西风 个人博客网站</title>
+    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+</head>
+<body class="web-body-content">
+<!-- Header -->
+{include file="tpl/header" /}
+    <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
+
+        <i class="fa fa-home"></i> <a href="/">首页</a> <i class="fa fa-angle-right"></i> 修改文章
+    </div>
+
+    <div class="layui-container article_detial" style="background-color: #fffFFF;padding-top: 10px;">
+
+        <form class="layui-form" >
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" autocomplete="off" placeholder="请输入标题" class="layui-input" lay-verify="required" value="{$article.title}">
+                </div>
+            </div>
+            <input type="hidden" name="id" value="{$article.id}">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">摘要</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" name="abstract" class="layui-textarea" maxlength="499" style="min-height: 30px;">{if condition=' $article.abstract_is!=0'}{$article.abstract}{/if}</textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="display: flex;">
+                <div class="layui-inline" >
+                    <label class="layui-form-label">类别</label>
+                    <div class="layui-input-inline">
+                        <select name="cate_name" lay-verify="required" lay-search="" id="cate_id">
+                            <option value="">直接选择或搜索选择</option>
+                            {volist name="cates" id="vo"}
+                            {if condition='$article.cate_name==$vo.name' }
+                            <option value="{$i}" selected="selected">{$vo.name}</option>
+                            {else/}
+                            <option value="{$i}">{$vo.name}</option>
+                            {/if}
+                            {/volist}
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text" >
+                <div class="layui-input-block" style="z-index:1;">
+                    <!-- 加载编辑器的容器 -->
+                    <textarea placeholder="请输入内容" name="article_content" id="article_container" >{$article.content}</textarea>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item " style="margin-left: 110px;">
+                <button class="layui-btn" lay-submit lay-filter="publish_bt">修改</button>
+            </div>
+        </form>
+
+
+    </div>
+    <!-- Footer -->
+    {include file="tpl/footer" /}
+<!-- 你的HTML代码 END -->
+
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="__STATIC__/plugins/tinymce/tinymce.min.js"></script>
+
+<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script>
+
+    tinymce.init({
+        selector: "textarea#article_container",
+        language:"zh_CN",
+        menubar: false,
+        height: this.height,
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+            "searchreplace wordcount visualblocks visualchars code codesample fullscreen insertdatetime media nonbreaking",
+            "save table contextmenu directionality emoticons template paste textcolor advcode autoresize"
+        ],
+        toolbar: "formatselect | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample link emoticons image media  preview | code ",
+        autoresize_on_init: false,
+        min_height: 350,
+    });
+    //一般直接写在一个js文件中
+    layui.use(['layer', 'form','element','util'], function(){
+        var layer = layui.layer
+            ,$=layui.jquery
+            ,form = layui.form
+            ,element = layui.element
+            ,util = layui.util;
+
+        //执行
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+        form.on('submit(publish_bt)',function(data){
+            var jsondata = data.field;
+            var options = document.getElementById("cate_id").options;
+            jsondata.cate_name = options[jsondata.cate_name].text;
+            jsondata.article_content = tinymce.activeEditor.getContent();
+            $.post("{:url('Article/changeArticle')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg(res.info,{time:2500});
+                    setTimeout(function(){window.location.href="{:url('article/detial',array('id'=>$article['id']))};"},2400);
+                }else{
+                    layer.msg(res.info,{time:2500});
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>
