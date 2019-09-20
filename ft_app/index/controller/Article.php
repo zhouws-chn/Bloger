@@ -126,7 +126,7 @@ class Article extends BaseController
             $data = ['status'=>false,'info'=>'没有有效数据'];
             return json($data);
         }
-        $info = $file->validate(['size'=>156780,'ext'=>'jpeg,jpg,png,gif'])->move(ROOT_PATH . 'public/static' . DS . 'uploads/images');//图片保存路径
+        $info = $file->validate(['size'=>2024000,'ext'=>'jpeg,jpg,png,gif'])->move(ROOT_PATH . 'public/static' . DS . 'uploads/images');//图片保存路径 最大2M
         if ($info) {
 
             $data = ['status'=>true,'info'=>$info->getSaveName()];

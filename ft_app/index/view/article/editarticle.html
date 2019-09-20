@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>叶念西风 个人博客网站</title>
-    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <title>发布文章 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
-    <link rel="stylesheet" media="screen and (min-width:769px)" href="__STATIC__/css/main.css" type="text/css">
-    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
 </head>
 <body class="web-body-content">
 <!-- Header -->
 {include file="tpl/header" /}
     <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
 
-        <i class="fa fa-home"></i> <a href="/">首页</a> <i class="fa fa-angle-right"></i> 编写文章
+        <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> 编写文章
     </div>
 
     <div class="layui-container article_detial" style="background-color: #fffFFF; padding-top: 10px;">
@@ -74,11 +74,10 @@
 <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
 <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="__STATIC__/plugins/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/tinymce.min.js"></script>
 
-<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
-
 
     //一般直接写在一个js文件中
     layui.use(['layer', 'form','element','util'], function(){
@@ -99,8 +98,9 @@
                 "save table contextmenu directionality emoticons template textcolor autoresize"
             ],
             toolbar: "formatselect | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample link emoticons image media  preview | code ",
-            autoresize_on_init: false,
+            autoresize_on_init: true,
             min_height: 350,
+            max_height: 900,
             powerpaste_word_import: 'propmt',// 参数可以是propmt, merge, clear，效果自行切换对比
             powerpaste_html_import: 'merge',// propmt, merge, clear
             powerpaste_allow_local_images: true,
@@ -121,7 +121,7 @@
                     processData: false,
                     success : function(res) {
                         if(res.status){
-                            success('\\static\\uploads\\images\\'+res.info);
+                            success("__TINYMCE_UPLOAD_PATH__\\images\\"+res.info);
                         }else{
                             layer.msg(res.info,{time:2500});
                         }

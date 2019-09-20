@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>栏目管理-叶念西风 个人博客网站</title>
-    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <title>栏目管理 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
-    <link rel="stylesheet" media="screen and (min-width:769px)" href="__STATIC__/css/main.css" type="text/css">
-    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
 </head>
 <body class="web-body-content">
 <!-- Header -->
 {include file="tpl/header" /}
 
 <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
-    <i class="fa fa-home"></i> <a href="{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> 栏目管理
+    <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> 栏目管理
 </div>
 <div class="layui-container">
     <div class="layui-row layui-col-space15">
@@ -24,24 +24,22 @@
                 <div class="layui-card-body" style="display: flex;">
                     <div class="article_img layui-hide-xs">
 
-                        <img src="__STATIC__/images/cates/{$vo.id}.jpg">
+                        <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/cates/{$vo.id}.jpg">
 
                     </div>
                     <div class="article_item">
-                        <p class="article_title"> <a href="">8686</a></p>
+                        <p class="article_title"> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a> <span style="color: lightgray; margin-left: 20%; font-size:14px;">优先级:{$vo.priority}</span></p>
 
                         <div class="article_info">
+
                             <item1>
-                                <i class="layui-icon layui-icon-note"></i> <a href=""></a>
+                                <button type="button" class="layui-btn layui-btn-sm">略缩图</button>
                             </item1>
                             <item1>
-                                <i class="layui-icon layui-icon-date"></i>
+                                <button type="button" class="layui-btn layui-btn-sm">编辑</button>
                             </item1>
                             <item1>
-                                <i class="layui-icon layui-icon-read"></i>
-                            </item1>
-                            <item1>
-                                <i class="layui-icon layui-icon-reply-fill"></i> 0
+                                <button class="layui-btn layui-btn-sm layui-btn-danger" lay-submit lay-filter="deleteCate_{$vo['id']}">删除</button>
                             </item1>
 
                         </div>
@@ -50,6 +48,9 @@
                 </div>
             </div>
             {/volist}
+            <div class="web-article-item" style="height: 80px;">
+                <button type="button" lay-submit lay-filter="addCate" class="layui-btn layui-btn-fluid" style="margin-top: 22px;"><i class="layui-icon">&#xe608;</i>添加栏目</button>
+            </div>
         </div>
         <!-- 侧边栏 手机不显示 -->
         <div class="layui-col-md4 layui-hide-xs layui-hide-sm layui-show-md-inline-block index-sidebar">
@@ -59,7 +60,7 @@
                     <ul>
                         {volist name="cates" id="vo"}
                         <li >
-                            <a href="{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                            <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
                         </li>
                         {/volist}
                     </ul>
@@ -80,11 +81,12 @@
 <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
 <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
     //一般直接写在一个js文件中
     layui.use(['layer', 'form','element','util','carousel'], function(){
         var layer = layui.layer
+            ,$=layui.jquery
             ,form = layui.form
             ,element = layui.element
             ,carousel = layui.carousel
@@ -95,6 +97,47 @@
             top: true
             ,showHeight:100
             ,click: function(type){ }
+        });
+        {volist name="cates" id="vo"}
+        form.on('submit(deleteCate_{$vo['id']})',function(data){
+            layer.confirm('确定删除栏目 {$vo['name']}？<br>警告:<font color="red">该栏目下的文章将都会被删除！</font>', {
+                btn: ['删除','取消'] //按钮
+            }, function(){
+                layer.prompt({title: '请输入密码:', formType: 1, maxlength:18}, function(pass, index){
+                    layer.close(index);
+                    var jsondata = new Object({"id":"{$vo['id']}"});
+                    jsondata['passwd'] = pass;
+                    $.post("{:url('Cate/delete')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('删除成功', {icon: 1});
+                            setTimeout(function(){window.location.href=document.referrer;},2500);
+
+                        }else{
+                            layer.msg('删除失败：'+res.info, {icon: 2});
+                        }
+                    });
+                });
+            }, function(){ });
+        });
+        {/volist}
+        form.on('submit(addCate)',function(data){
+            layer.prompt({title: '请输入新的栏目名称', formType: 0,maxlength:12}, function(text, index){
+                layer.close(index);
+                layer.prompt({title: '请输入优先级(数字越小优先级越高)', formType: 0,maxlength:2,value: 99,}, function(num, index){
+                    layer.close(index);
+                    var jsondata = new Object({"cate_name":text});
+                    jsondata["index"] = num;
+                    $.post("{:url('Cate/add')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('添加成功', {icon: 1});
+                            setTimeout(function(){window.location.reload();},2500);
+
+                        }else{
+                            layer.msg('添加失败：'+res.info, {icon: 2});
+                        }
+                    });
+                });
+            });
         });
 
     });

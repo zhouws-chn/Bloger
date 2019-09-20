@@ -8,7 +8,7 @@ class BaseController extends Controller
 
     public function _initialize()
     {
-        $cates = Cate::field('id,name')->order('priority','asc')->select();
+        $cates = Cate::field('id,name,priority')->order('priority','asc')->select();
         $this->assign('cates',$cates);
     }
 

@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>叶念西风 个人博客网站 feitiger.com</title>
-    <meta name="description" content="叶念西风个人博客 积累知识 分享经验 技术讨论" />
-    <meta name="keywords" content="叶念西风,个人博客,积累,知识,分享,经验,技术,讨论" />
-    <link rel="stylesheet" href="__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <title>__WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <meta name="description" content="__WEB_NAME__个人博客 积累知识 分享经验 技术讨论" />
+    <meta name="keywords" content="__WEB_NAME__,个人博客,积累,知识,分享,经验,技术,讨论" />
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
-    <link rel="stylesheet" media="screen and (min-width:769px)" href="__STATIC__/css/main.css" type="text/css">
-    <link rel="stylesheet" media="screen and (max-width:768px)" href="__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 </head>
 <body class="web-body-content">
@@ -46,19 +46,19 @@
                     <div class="layui-card-body" style="display: flex;">
                         <div class="article_img layui-hide-xs">
                             {if condition='empty($vo.title_img)'}
-                            <img src="__STATIC__/images/cates/{$vo.cate_id}.jpg">
+                            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/cates/{$vo.cate_id}.jpg">
                             {else/}
                             <img src="{$vo.title_img}">
                             {/if}
                         </div>
                         <div class="article_item">
-                            <p class="article_title"> <a href="{:url('article/detial',array('id'=>$vo['id']))}">{$vo.title}</a></p>
+                            <p class="article_title"> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$vo['id']))}">{$vo.title}</a></p>
                             <div class="article_abstract layui-hide-xs">
                                 {$vo.abstract}
                             </div>
                             <div class="article_info">
                                 <item1>
-                                    <i class="layui-icon layui-icon-note"></i> <a href="{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
+                                    <i class="layui-icon layui-icon-note"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
                                 </item1>
                                 <item1>
                                     <i class="layui-icon layui-icon-date"></i> {$vo.update_time|date='Y-m-d',###}
@@ -111,7 +111,7 @@
                         <ul>
                             {volist name="cates" id="vo"}
                             <li >
-                                <a href="{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                                <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
                             </li>
                             {/volist}
                         </ul>
@@ -132,7 +132,7 @@
 <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
 <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-<script src="__STATIC__/plugins/layui/layui.js"></script>
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
     //一般直接写在一个js文件中
     layui.use(['layer', 'form','element','util','carousel'], function(){
