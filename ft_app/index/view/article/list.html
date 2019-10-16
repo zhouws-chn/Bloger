@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>{$cate_name}栏目 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
@@ -23,10 +24,10 @@
                 <div class="web-article-item">
                     <div class="layui-card-body" style="display: flex;">
                         <div class="article_img layui-hide-xs">
-                            {if condition='empty($vo.title_img)'}
-                            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/cates/{$vo.cate_id}.jpg">
+                           {if condition='empty($vo.title_img)'}
+                            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/cates/{$vo.cate_id}.jpg" alt="{$vo.cate_name}栏目">
                             {else/}
-                            <img src="{$vo.title_img}">
+                            <img src="{$vo.title_img}" alt="{$vo.title}">
                             {/if}
                         </div>
                         <div class="article_item">
@@ -36,16 +37,16 @@
                             </div>
                             <div class="article_info">
                                 <item1>
-                                    <i class="layui-icon layui-icon-note"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
+                                    <i class="fa fa-tag" aria-hidden="true"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
                                 </item1>
                                 <item1>
-                                    <i class="layui-icon layui-icon-date"></i> {$vo.update_time|date='Y-m-d',###}
+                                    <i class="fa fa-calendar" aria-hidden="true"></i> {$vo.create_time|date='Y-m-d',###}
                                 </item1>
                                 <item1>
-                                    <i class="layui-icon layui-icon-read"></i> {$vo.pv}
+                                    <i class="fa fa-fire" aria-hidden="true"></i> {$vo.pv}
                                 </item1>
                                 <item1>
-                                    <i class="layui-icon layui-icon-reply-fill"></i> 0
+                                    <i class="fa fa-comments-o" aria-hidden="true"></i> 0
                                 </item1>
 
                             </div>
@@ -58,7 +59,7 @@
             <!-- 侧边栏 手机不显示 -->
             <div class="layui-col-md4 layui-hide-xs layui-hide-sm layui-show-md-inline-block index-sidebar">
                 <div class="layui-card index-recommand">
-                    <div class="layui-card-header"><i class="layui-icon layui-icon-component" ></i>推荐栏目</div>
+                    <div class="layui-card-header"><i class="fa fa-delicious" aria-hidden="true"></i>推荐栏目</div>
                     <div class="layui-card-body">
                         <ul>
                             {volist name="cates" id="vo"}
@@ -86,7 +87,7 @@
 <![endif]-->
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
-    //一般直接写在一个js文件中
+    /*一般直接写在一个js文件中*/
     layui.use(['layer', 'form','element','util','carousel'], function(){
         var layer = layui.layer
             ,form = layui.form
@@ -94,30 +95,11 @@
             ,carousel = layui.carousel
             ,util = layui.util;
 
-        //执行
+        /*执行*/
         util.fixbar({
             top: true
             ,showHeight:100
             ,click: function(type){ }
-        });
-
-        //建造实例
-        carousel.render({
-            elem: '#carousel_index'
-            ,width: '100%' //设置容器宽度
-            ,height:'240px'
-            ,arrow: 'hover'//悬停显示箭头
-            //,anim: 'updown' //切换动画方式
-            ,indicator:'inside'
-            ,interval:'5000'
-        });
-        carousel.render({
-            elem: '#carousel_news'
-            ,width: '100%' //设置容器宽度
-            ,height:'20px'
-            ,arrow: 'none'//不显示箭头
-            ,anim: 'updown' //切换动画方式
-            ,indicator:'none'
         });
 
     });

@@ -1,10 +1,14 @@
     <footer>
         <div class="layui-bg-cyan">
-            <div class="layui-container" style="height: 100px;">
-
+            <div class="layui-container" style="min-height: 100px;padding-top: 10px;">
+                {volist name="cates" id="vo"}
+                <div style="color: gray;">
+                    <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                </div>
+                {/volist}
             </div>
         </div>
         <div style="text-align: center; font-size: 12px;">
-            Copyright © 2019&nbsp; &nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
+            Copyright&nbsp;<i class="fa fa-copyright" aria-hidden="true"></i>&nbsp;2019&nbsp;&nbsp;<a href="http://www.beian.miit.gov.cn/">京公网安备00000000000000</a>
         </div>
     </footer>

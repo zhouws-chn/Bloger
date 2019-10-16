@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>登陆 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
@@ -21,7 +22,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label" style="width: 48px;font-size: 16px;">邮箱</label>
                     <div class="layui-input-inline">
-                        <input type="email" name="email" required  lay-verify="required" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+                        <input type="email" name="email" required  lay-verify="required" placeholder="请输入邮箱" autocomplete="on" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item" >
@@ -64,7 +65,6 @@
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
 
-    //一般直接写在一个js文件中
     layui.use(['layer', 'form','element','util','upload'], function(){
         var layer = layui.layer
             ,$=layui.jquery
@@ -72,7 +72,6 @@
             ,element = layui.element
             ,util = layui.util;
 
-        //执行
         util.fixbar({
             top: true
             ,showHeight:100
@@ -106,8 +105,6 @@
             });
             return false;
         });
-
-
 
     });
 </script>

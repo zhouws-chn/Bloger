@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>个人中心 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.css"  type="text/css">
+
+</head>
+<body class="web-body-content">
+<!-- Header -->
+{include file="tpl/header" /}
+<div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
+    <div class="my-zone">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">个人信息</li>
+                <li>网站管理</li>
+
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    {include file="tpl/my_zone_tab_user_data" /}
+                </div>
+                <div class="layui-tab-item">
+
+                    <form class="layui-form" action="" style="margin-top: 20px;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">密码</label>
+                            <div class="layui-input-inline" style="width:300px;">
+                                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码验证管理员权限" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="verifyAdmin">验证权限</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+{include file="tpl/footer" /}
+<!-- 你的HTML代码 END -->
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.js"></script>
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    /* 一般直接写在一个js文件中 */
+    layui.use(['layer', 'form','util','element'], function(){
+        var layer = layui.layer
+            ,$=layui.jquery
+            ,form = layui.form
+            ,element = layui.element
+            ,util = layui.util;
+
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+        form.verify({
+            pass:[
+                /^[\S]{6,18}$/
+                ,'密码必须是6到18位,且不能出现空格'
+            ]
+        });
+
+        form.on('submit(updateUserData)', function(data){
+            layer.confirm('您确认修改资料吗？', {
+                btn: ['确认','取消']
+            }, function(){
+
+                layer.close();
+                var jsondata = data.field;
+                $.post("{:url('User/updateUserData')}",jsondata,function(res){
+                    if(res.status) {
+                        layer.msg(res.info,{time:2500});
+                        setTimeout(function(){window.location.reload();},2400);
+                    }else{
+                        layer.msg(res.info,{time:2500});
+                    }
+                });
+            }, function(){
+                layer.msg('已取消', {icon: 0});
+            });
+            return false;
+        });
+
+        form.on('submit(verifyAdmin)', function(data){
+            var jsondata = data.field;
+            $.post("{:url('User/verifyAdmin')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg(res.info,{time:2500});
+                    setTimeout(function(){window.location.reload();},2400);
+                }else{
+                    layer.msg(res.info,{time:2500});
+                }
+            });
+        });
+    });
+
+
+</script>
+</body>
+</html>

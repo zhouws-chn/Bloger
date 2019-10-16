@@ -4,6 +4,7 @@ namespace app\index\controller;
 use app\common\controller\BaseController;
 use think\Session;
 use \think\File;
+use think\Config;
 
 class Article extends BaseController
 {
@@ -21,7 +22,12 @@ class Article extends BaseController
         if(!$article){
             return $this->error("文章不存在");
         }
-        $article->setInc('pv');
+        if(!Session::has('article.'.$article_id))
+        {
+                Session::set('article.'.$article_id,'');
+                $article->setInc('pv');
+        }
+        
         $this->assign('article',$article);
 
         return $this->fetch('article');
@@ -35,7 +41,7 @@ class Article extends BaseController
             die;
         }
         $cate_id = input('id');
-        $articles = \think\Loader::model('Article')::where('cate_id',$cate_id)->field('id,title,abstract,title_img,cate_id,cate_name,pv,update_time')->order('update_time','desc')->limit(10)->select();
+        $articles = \think\Loader::model('Article')::where('cate_id',$cate_id)->field('id,title,abstract,title_img,cate_id,cate_name,pv,create_time,update_time')->order('create_time','desc')->limit(10)->select();
         if(!$articles) {
             return $this->error('没有文章');
         }
@@ -95,8 +101,36 @@ class Article extends BaseController
             'title' => input('title'),
             'content' => input('article_content'),
             'cate_name' => input('cate_name'),
-            'abstract' => input('abstract')
+            'abstract' => input('abstract'),
+            'origin_url' => input('origin_url')
         ];
+        $get_pic = input('get_pic');
+        if(!empty($get_pic)){
+            $config_view_replace_str = config("view_replace_str");
+            $this_url = $config_view_replace_str['__WEB_URL_PROTOCOL__'].'\\\\'.$config_view_replace_str['__WEB_URL_HOSTNAME__'];
+            $this_url_len = strlen($this_url);
+            $pic_url_all = get_pic_url_from_html($data['content']);
+            // TODO:去除重复的url
+            $pic_url_all = array_flip($pic_url_all);
+            $pic_url_all = array_keys($pic_url_all);
+            /* 遍历 */
+            $ch = curl_init();
+            foreach ($pic_url_all as $pic_url) {
+                // TODO: 过滤掉本站图片的URL
+                // 首先过滤掉非http开头的url
+                if(substr($pic_url,0,4) == "http"){
+                    // 再过滤掉包含本站url的URL
+                    if((strlen($pic_url)-$this_url_len<0)||(substr($pic_url,0,$this_url_len) != $this_url_len)){
+                        // TODO:下载图片
+                        $result_pic_url = pic_download_from_url($pic_url);
+                        // TODO: 将保存后的地址赋值给 $result_pic_url
+                        if( $result_pic_url != $pic_url)
+                            $data['content'] = str_replace($pic_url,$result_pic_url,$data['content']);
+                    }
+                }
+            }
+        }
+
         $article = \think\Loader::model('Article','logic');
         $res = $article->addArticle($data);
         if( $res['status'] )
@@ -128,7 +162,6 @@ class Article extends BaseController
         }
         $info = $file->validate(['size'=>2024000,'ext'=>'jpeg,jpg,png,gif'])->move(ROOT_PATH . 'public/static' . DS . 'uploads/images');//图片保存路径 最大2M
         if ($info) {
-
             $data = ['status'=>true,'info'=>$info->getSaveName()];
         }else{
             $data = ['status'=>false,'info'=>$file->getError()];
@@ -150,8 +183,35 @@ class Article extends BaseController
             'title' => input('title'),
             'content' => input('article_content'),
             'cate_name' => input('cate_name'),
-            'abstract' => input('abstract')
+            'abstract' => input('abstract'),
+            'origin_url' => input('origin_url')
         ];
+        $get_pic = input('get_pic');
+        if(!empty($get_pic)){
+            $config_view_replace_str = config("view_replace_str");
+            $this_url = $config_view_replace_str['__WEB_URL_PROTOCOL__'].'\\\\'.$config_view_replace_str['__WEB_URL_HOSTNAME__'];
+            $this_url_len = strlen($this_url);
+            $pic_url_all = get_pic_url_from_html($data['content']);
+            // TODO:去除重复的url
+            $pic_url_all = array_flip($pic_url_all);
+            $pic_url_all = array_keys($pic_url_all);
+            /* 遍历 */
+            $ch = curl_init();
+            foreach ($pic_url_all as $pic_url) {
+                // TODO: 过滤掉本站图片的URL
+                // 首先过滤掉非http开头的url
+                if(substr($pic_url,0,4) == "http"){
+                    // 再过滤掉包含本站url的URL
+                    if((strlen($pic_url)-$this_url_len<0)||(substr($pic_url,0,$this_url_len) != $this_url_len)){
+                        // TODO:下载图片
+                        $result_pic_url = pic_download_from_url($pic_url);
+                        // TODO: 将保存后的地址赋值给 $result_pic_url
+                        if( $result_pic_url != $pic_url)
+                            $data['content'] = str_replace($pic_url,$result_pic_url,$data['content']);
+                    }
+                }
+            }
+        }
         $article = \think\Loader::model('Article','logic');
         $res = $article->updateArticle($data);
         if( $res['status'] )

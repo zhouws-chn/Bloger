@@ -76,7 +76,7 @@ class Login extends BaseController
     {
         if(Session::has('uname'))
         {
-            
+            Session::delete('uAdmin');
             Session::delete('uname');
             return $this->success('您已退出登陆','/');
         }

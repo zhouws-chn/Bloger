@@ -7,7 +7,7 @@ class Index extends BaseController
 {
     public function index()
     {
-        $articles = Article::field('id,title,abstract,title_img,cate_id,cate_name,pv,update_time')->order('update_time','desc')->limit(10)->select();
+        $articles = Article::field('id,title,abstract,title_img,cate_id,cate_name,pv,create_time,update_time')->order('create_time','desc')->limit(10)->select();
         
         $this->assign('articles',$articles);
         

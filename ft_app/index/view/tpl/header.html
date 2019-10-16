@@ -9,17 +9,18 @@
                     <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block">
                         <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a>
                     </li>
-                    {volist name="cates" id="vo"}
+                    {volist name="cates" id="vo"}{if condition='$vo.priority<60'}
                     <li class="layui-nav-item layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
                         <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
-                    </li>
+                    </li>{/if}
                     {/volist}
                     <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
                         {if condition=' $Request.session.uname!=null'}
                         <a href="javascript:;">{$Request.session.uname}</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}">发布文章</a></dd>
-                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Cate/adminList')}">栏目管理</a></dd>
+                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('User/myZone')}">个人中心</a></dd>
+                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}">文章发布</a></dd>{if condition=' $Request.session.uAdmin!=null'}
+                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Cate/adminList')}">栏目管理</a></dd>{/if}
                             <dd><a href="javascript:;">草稿箱</a></dd>
                             <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Login/logout')}">退了</a></dd>
                         </dl>

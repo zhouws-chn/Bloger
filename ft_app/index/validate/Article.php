@@ -7,7 +7,7 @@ class Article extends Validate{
         'author_id' => 'require',
         'content' => 'require',
         'cate_id' => 'require',
-        'title' => 'require|max:50|unique:articles'
+        'title' => 'require|max:78|unique:articles'
    ];
    protected $message = [
     'author_id' => '没有作者信息',

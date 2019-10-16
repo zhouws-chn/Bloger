@@ -39,18 +39,30 @@
                     <label class="layui-form-label">类别</label>
                     <div class="layui-input-inline">
                         <select name="cate_name" lay-verify="required" lay-search="" id="cate_id">
-                            <option value="">直接选择或搜索选择</option>
+                            <option value="" selected="selected">直接选择或搜索选择</option>
                             {volist name="cates" id="vo"}
                             {if condition='$article.cate_name==$vo.name' }
-                            <option value="{$i}" selected="selected">{$vo.name}</option>
+                            <option value="{$i}" >{$vo.name}</option>
                             {else/}
                             <option value="{$i}">{$vo.name}</option>
                             {/if}
                             {/volist}
                         </select>
                     </div>
-                    
+                    <input type="checkbox" name="get_pic" title="远程图片本地化">
                 </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+
+                <label class="layui-form-label">来源</label>
+
+                <div class="layui-input-block" >{if condition=' strlen($article.origin_url)<4'}
+                    <input type="text" name="origin_url" autocomplete="off" placeholder="原创请留空，转载请输入来源地址" class="layui-input" style="width: 240px;">
+                    {else/}
+                    <input type="text" value="{$article.origin_url}" name="origin_url" autocomplete="off" placeholder="原创请留空，转载请输入来源地址" class="layui-input" style="width: 240px;">
+                    {/if}
+                </div>
+
             </div>
             <div class="layui-form-item layui-form-text" >
                 <div class="layui-input-block" style="z-index:1;">
@@ -58,19 +70,14 @@
                     <textarea placeholder="请输入内容" name="article_content" id="article_container" >{$article.content}</textarea>
                 </div>
             </div>
-
-
             <div class="layui-form-item " style="margin-left: 110px;">
-                <button class="layui-btn" lay-submit lay-filter="publish_bt">修改</button>
+                <button class="layui-btn" lay-submit lay-filter="publish_bt" id="publish_bt_id">修改</button>
             </div>
         </form>
-
-
     </div>
     <!-- Footer -->
     {include file="tpl/footer" /}
 <!-- 你的HTML代码 END -->
-
 
 <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 <!--[if lt IE 9]>
@@ -81,7 +88,7 @@
 
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
-    //一般直接写在一个js文件中
+    /* 一般直接写在一个js文件中 */
     layui.use(['layer', 'form','element','util'], function(){
         var layer = layui.layer
             ,$=layui.jquery
@@ -103,14 +110,14 @@
             autoresize_on_init: false,
             min_height: 350,
             max_height: 900,
-            powerpaste_word_import: 'propmt',// 参数可以是propmt, merge, clear，效果自行切换对比
-            powerpaste_html_import: 'merge',// propmt, merge, clear
+            powerpaste_word_import: 'propmt',/* 参数可以是propmt, merge, clear，效果自行切换对比 */
+            powerpaste_html_import: 'merge',/* propmt, merge, clear */
             powerpaste_allow_local_images: true,
             paste_data_images: true,
             images_upload_handler: function (blobInfo, success, failure) {
-                // 这个函数主要处理word中的图片，并自动完成上传；
-                // ajaxUpload是自己定义的一个函数；在回调中，记得调用success函数，传入上传好的图片地址；
-                // blobInfo.blob() 得到图片的file对象；
+                /* 这个函数主要处理word中的图片，并自动完成上传； */
+                /* ajaxUpload是自己定义的一个函数；在回调中，记得调用success函数，传入上传好的图片地址； */
+                /* blobInfo.blob() 得到图片的file对象； */
                 var formData = new FormData();
                 formData.append('file', blobInfo.blob(),blobInfo.filename());
                 $.ajax({
@@ -132,7 +139,7 @@
             },
         });
 
-        //执行
+        /* 执行 */
         util.fixbar({
             top: true
             ,showHeight:100
@@ -140,6 +147,7 @@
         });
 
         form.on('submit(publish_bt)',function(data){
+            $("#publish_bt_id").addClass("layui-btn-disabled").prop('disabled',true);
             var jsondata = data.field;
             var options = document.getElementById("cate_id").options;
             jsondata.cate_name = options[jsondata.cate_name].text;
@@ -147,9 +155,10 @@
             $.post("{:url('Article/changeArticle')}",jsondata,function(res){
                 if(res.status) {
                     layer.msg(res.info,{time:2500});
-                    setTimeout(function(){window.location.href="{:url('article/detial',array('id'=>$article['id']))};"},2400);
+                    setTimeout(function(){window.location.href="{:url('article/detial',array('id'=>$article['id']))}"},2400);
                 }else{
                     layer.msg(res.info,{time:2500});
+                    $("#publish_bt_id").removeClass("layui-btn-disabled").prop('disabled',false);
                 }
             });
             return false;

@@ -7,6 +7,7 @@
     <title>__WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
     <meta name="description" content="__WEB_NAME__个人博客 积累知识 分享经验 技术讨论" />
     <meta name="keywords" content="__WEB_NAME__,个人博客,积累,知识,分享,经验,技术,讨论" />
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
@@ -14,26 +15,20 @@
     <meta http-equiv="Cache-Control" content="no-siteapp" />
 </head>
 <body class="web-body-content">
-
     <!-- Header -->
 {include file="tpl/header" /}
-
     <div class="layui-container carousel-news" >
-
         <div class="layui-carousel" id="carousel_news">
             <i class="fa fa-volume-down"></i>
-            <div carousel-item>
-                <div><a href="javascript:;">网站正在开发中......</a></div>
-                <div><a href="javascript:;">正在紧张的准备中,欢迎关注!!!!</a></div>
+            <div>
+                <div id="index_ad_div"><a href="javascript:;">网站正在开发中......</a></div>
             </div>
         </div>
     </div>
     <div class="layui-container carousel-big-news" id="carousel_div">
         <div class="layui-carousel" id="carousel_index">
             <div carousel-item>
-                <div><a href=""><img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg" ></a></div>
-                <div><a href=""><img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg"></a></div>
-                <div><a href=""><img src="https://cuijiahua.com/wp-content/uploads/2019/04/ml_bg.jpg"></a></div>
+                <div><a href=""><img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/carouse/gq70.jpg" ></a></div>
             </div>
         </div>
     </div>
@@ -46,9 +41,9 @@
                     <div class="layui-card-body" style="display: flex;">
                         <div class="article_img layui-hide-xs">
                             {if condition='empty($vo.title_img)'}
-                            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/cates/{$vo.cate_id}.jpg">
+                            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/cates/{$vo.cate_id}.jpg" alt="{$vo.cate_name}栏目">
                             {else/}
-                            <img src="{$vo.title_img}">
+                            <img src="{$vo.title_img}" alt="{$vo.title}">
                             {/if}
                         </div>
                         <div class="article_item">
@@ -58,16 +53,16 @@
                             </div>
                             <div class="article_info">
                                 <item1>
-                                    <i class="layui-icon layui-icon-note"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
+                                    <i class="fa fa-tag" aria-hidden="true"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['cate_id']))}">{$vo.cate_name}</a>
                                 </item1>
                                 <item1>
-                                    <i class="layui-icon layui-icon-date"></i> {$vo.update_time|date='Y-m-d',###}
+                                    <i class="fa fa-calendar" aria-hidden="true"></i> {$vo.create_time|date='Y-m-d',###}
                                 </item1>
                                 <item1>
-                                    <i class="layui-icon layui-icon-read"></i> {$vo.pv}
+                                    <i class="fa fa-fire" aria-hidden="true"></i> {$vo.pv}
                                 </item1>
                                 <item1>
-                                    <i class="layui-icon layui-icon-reply-fill"></i> 0
+                                    <i class="fa fa-comments-o" aria-hidden="true"></i> 0
                                 </item1>
 
                             </div>
@@ -82,31 +77,31 @@
                 <div class="layui-card web-blogger-info">
                     <div class="layui-card-body">
                         <div class = "web-blogger-logo">
-                            <img src="1.png">
+                            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/web_logo.png" alt="web_logo_img">
                         </div>
                         <div class="web-blogger-name">
                             <p>叶念西风</p>
                         </div>
 
-                        <p style="margin-top: 14px;">秋风别叶，叶念西风秋风别叶，叶念西风<br>本站源码已开源,有意请移步Github</p>
+                        <p style="margin-top: 14px;">秋风别叶，叶念西风!<br>本站源码已开源,有意请移步Github</p>
 
 
                         <ul class="my_contact">
                             <li >
-                                <a href=""> <i class="fa fa-weixin"></i></a>
+                                <a href="" title="WeChat:ynxf66"> <i class="fa fa-weixin"></i></a>
                             </li>
                             <li >
-                                <a href=""> <i class="fa fa-qq"></i></a>
+                                <a href="" title="QQ:2216691777"> <i class="fa fa-qq"></i></a>
                             </li>
                             <li >
-                                <a href="https://github.com/zhouws-chn"> <i class="fa fa-github"></i></a>
+                                <a href="https://github.com/zhouws-chn" title="Github:https://github.com/zhouws-chn" target="_blank"> <i class="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="layui-card index-recommand">
-                    <div class="layui-card-header"><i class="layui-icon layui-icon-component" ></i>推荐栏目</div>
+                    <div class="layui-card-header"><i class="fa fa-delicious" aria-hidden="true"></i>推荐栏目</div>
                     <div class="layui-card-body">
                         <ul>
                             {volist name="cates" id="vo"}
@@ -134,42 +129,46 @@
 <![endif]-->
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
-    //一般直接写在一个js文件中
     layui.use(['layer', 'form','element','util','carousel'], function(){
         var layer = layui.layer
+            ,$=layui.jquery
             ,form = layui.form
             ,element = layui.element
             ,carousel = layui.carousel
             ,util = layui.util;
 
-        //执行
         util.fixbar({
             top: true
             ,showHeight:100
             ,click: function(type){ }
         });
 
-        //建造实例
+        /*建造实例*/
         carousel.render({
             elem: '#carousel_index'
-            ,width: '100%' //设置容器宽度
+            ,width: '100%'
             ,height:'220px'
-            ,arrow: 'hover'//悬停显示箭头
-            //,anim: 'updown' //切换动画方式
+            ,arrow: 'hover'/*悬停显示箭头*/
+            /*,anim: 'updown' */ /*切换动画方式*/
             ,indicator:'none'
             ,interval:'5000'
         });
         change_carousel_div();
-        carousel.render({
-            elem: '#carousel_news'
-            ,width: '100%' //设置容器宽度
-            ,height:'20px'
-            ,arrow: 'none'//不显示箭头
-            ,anim: 'updown' //切换动画方式
-            ,indicator:'none'
+
+        $(document).ready(function(){
+                window.setInterval( index_ad,5000);
+
+
         });
-
-
+        var ad_content_arr = ['<a href="javascript:;">网站正在开发中......</a>','<a href="javascript:;">正在紧张准备中,欢迎关注!</a>'];
+        var ad_content_index = 0;
+        $("#index_ad_div").html(ad_content_arr[0]);
+        function index_ad() {
+            $("#index_ad_div").fadeOut();
+            window.setTimeout(function () { $("#index_ad_div").html(ad_content_arr[ad_content_index]);},400)
+            $("#index_ad_div").fadeIn();
+            ad_content_index = (ad_content_index+1)%ad_content_arr.length;
+        }
 
     });
 

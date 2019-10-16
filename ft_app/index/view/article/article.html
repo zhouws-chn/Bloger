@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>{$article.title} - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
@@ -14,6 +15,7 @@
 <body class="web-body-content">
 <!-- Header -->
 {include file="tpl/header" /}
+
     <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
 
         <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$article['cate_id']))}">{$article.cate_name}</a> <i class="fa fa-angle-right"></i> {$article.title}
@@ -25,13 +27,18 @@
         </header>
         <div class="article_detial_info">
             <div style="margin-left: 20px;">
-                <i class="layui-icon layui-icon-date" style="font-size: 14px; color: gray;"></i> {$article.update_time|date='Y-m-d',###}
+                <i class="fa fa-calendar" aria-hidden="true"  style="font-size: 14px; color: gray;"></i> {$article.create_time|date='Y-m-d',###}
+            </div>
+            <div style="margin-left: 20px;font-size: 12px;">
+                {if condition=' strlen($article.origin_url)<4'} <i class="fa fa-paper-plane-o" aria-hidden="true"  style="font-size: 14px; color: gray;"></i> 原创
+                {else/} <i class="fa fa-paper-plane-o" aria-hidden="true"  style="font-size: 14px; color: gray;"></i> 转载
+                {/if}
             </div>
             <div style="margin-left: 20px;">
-                <i class="layui-icon layui-icon-read" style="font-size: 14px; color: gray;"></i> {$article.pv}
+                <i class="fa fa-fire" aria-hidden="true"  style="font-size: 14px; color: gray;"></i> {$article.pv}
             </div>
             <div style="margin-left: 20px;">
-                <i class="layui-icon layui-icon-reply-fill" style="font-size: 14px; color: gray;"></i> 0
+                <i class="fa fa-comments-o" aria-hidden="true"  style="font-size: 14px; color: gray;"></i> 0
             </div>
 
         </div>{if condition=' $article.abstract_is!=0'}
@@ -39,7 +46,14 @@
             <span style="color: red;">摘要:</span>{$article.abstract}
         </div>{/if}
 
-        <div class="article_content">{$article.content}</div>
+        <div class="article_content">{$article.content}
+        <hr>
+        <div class="article_source">{if condition=' strlen($article.origin_url)<4'}
+        <span>文章来源:<a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}">__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}</a></span> <span style="float:right;">文章最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
+        {else/}
+            <span>文章来源:<a href="{$article.origin_url}">{$article.origin_url}</a></span> <span style="float:right;">文章最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
+        {/if}
+        </div></div>
 
     </div>
     <div class="layui-container admin-article-power" style="background-color: ghostwhite;margin-top: 20px;">
@@ -62,44 +76,24 @@
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.js"></script>
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
-    //一般直接写在一个js文件中
-    layui.use(['layer', 'form','element','util','carousel'], function(){
+    /* 一般直接写在一个js文件中 */
+    layui.use(['layer', 'form','util','element'], function(){
         var layer = layui.layer
             ,$=layui.jquery
             ,form = layui.form
             ,element = layui.element
-            ,carousel = layui.carousel
             ,util = layui.util;
 
-        //执行
+        /* 执行 */
         util.fixbar({
             top: true
             ,showHeight:100
             ,click: function(type){ }
         });
-
-        //建造实例
-        carousel.render({
-            elem: '#carousel_index'
-            ,width: '100%' //设置容器宽度
-            ,height:'240px'
-            ,arrow: 'hover'//悬停显示箭头
-            //,anim: 'updown' //切换动画方式
-            ,indicator:'inside'
-            ,interval:'5000'
-        });
-        carousel.render({
-            elem: '#carousel_news'
-            ,width: '100%' //设置容器宽度
-            ,height:'20px'
-            ,arrow: 'none'//不显示箭头
-            ,anim: 'updown' //切换动画方式
-            ,indicator:'none'
-        });
         {if condition=' $Request.session.uname!=null'}
         form.on('submit(deleteArticle)',function(data){
             layer.confirm('确定删除 {$article.title} ？', {
-                btn: ['删除','取消'] //按钮
+                btn: ['删除','取消']
             }, function(){
                 var jsondata = new Object({"id":"{$article.id}"});
                 $.post("{:url('Article/delete')}",jsondata,function(res){
