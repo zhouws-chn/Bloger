@@ -144,6 +144,8 @@ class Article extends BaseController
         return json($data);
     }
 
+
+
     public function submitArticleImage()
     {
         $this->LoginVerify();

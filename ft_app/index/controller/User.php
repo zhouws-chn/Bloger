@@ -13,13 +13,21 @@ class User extends UserController
             dump('error.');
             die;
         }
+        $tab_id = input('tab');
+        if(!is_numeric ($tab_id)){
+            $tab_id = 1;
+        }else if( $tab_id>3 ||  $tab_id<1 ){
+            $tab_id = 1;
+        }
         if(Session::has('uAdmin'))
         {
-            $this->redirect('Admin/myZone');
+            $this->redirect('Admin/myZone',array('tab'=>$tab_id));
         }
 
+        $this->assign('tab',(int)$tab_id);
         $user = \think\Loader::model('User')::get(['id'=>Session::get('uid')]);
         $this->assign('user',$user);
+
         return $this->fetch("my_zone");
     }
 
@@ -105,4 +113,52 @@ class User extends UserController
             return json($data);
         }
     }
+
+    public function articleLists(){
+        // 去掉非get请求
+
+        $articles = null;
+        $limit_num = input("limit");
+        $cate_name = input("cate_name");
+        $articlesModel = \think\Loader::model('Article');
+
+        if(is_null($cate_name)){
+            $articles = $articlesModel::where(['author_id'=>Session::get('uid')]);
+        } else {
+            $articles = $articlesModel::where(['author_id'=>Session::get('uid'),'cate_name'=>$cate_name]);
+        }
+
+        if(empty($articles)){
+            $data['code'] = 0;
+            $data['msg'] = "top_msg";
+            $data['count'] = 0;
+            $data['data'] = [""];
+            return json($data);
+        }
+
+        $article_items = $articles->field('id,title,cate_name,create_time')->order('id', 'desc')->paginate($limit_num)->all();
+        $article_num = $articles->field('id,title,cate_name,create_time')->order('id', 'desc')->count();
+        $articles = collection($article_items)->toArray();
+        //$article_num = count($articles);
+        $data['code'] = 0;
+        $data['msg'] = "top_msg";
+        $data['count'] = $article_num;
+        $data['data'] = $articles;
+        return json($data);
+    }
+
+    public function cateList(){
+        $data = [];
+        $cates = \think\Loader::model('Cate')::field('id,name,priority')->order('priority', 'desc')->select();
+        $data['code'] = 0;
+        $data['msg'] = "top_msg";
+        $cate_index = 0;
+        foreach($cates->toArray() as $value){
+            $data['data'][$cate_index]=['value'=>$value['name'],'key'=>$value['name']];
+            $cate_index = $cate_index+1;
+        }
+        return json($data);
+    }
+
+
 }

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>草稿箱 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
+</head>
+<body class="web-body-content">
+<!-- Header -->
+{include file="tpl/header" /}
+
+<div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
+    <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> 草稿箱
+</div>
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+
+            <div class="web-article-item">
+                <div class="layui-card-body" style="display: flex;">
+                    <div class="article_item" style="width: 100%;">
+                        <p class="article_title"><i class="fa fa-circle-o" aria-hidden="true"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$vo['id']))}">实打实大苏打撒旦撒旦阿松大阿松大苏打撒旦撒旦阿松大阿松大大苏打撒旦撒旦阿松大阿松大大阿松大阿松大sd</a></p>
+                        <div class="article_abstract layui-hide-xs">
+                            vo.abstract
+                        </div>
+                        <div class="article_info">
+                            <item1>
+                                <i class="fa fa-calendar" aria-hidden="true"></i> sds
+                            </item1>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <!-- 侧边栏 手机不显示 -->
+        <div class="layui-col-md4 layui-hide-xs layui-hide-sm layui-show-md-inline-block index-sidebar">
+            <div class="layui-card index-recommand">
+                <div class="layui-card-header"><i class="fa fa-delicious" aria-hidden="true"></i>推荐栏目</div>
+                <div class="layui-card-body">
+                    <ul>
+                        {volist name="cates" id="vo"}
+                        <li >
+                            <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                        </li>
+                        {/volist}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 侧边栏 手机不显示 END -->
+    </div>
+</div>
+<!-- Footer -->
+{include file="tpl/footer" /}
+
+<!-- 你的HTML代码 END -->
+
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    /*一般直接写在一个js文件中*/
+    layui.use(['layer', 'form','element','util','carousel'], function(){
+        var layer = layui.layer
+            ,form = layui.form
+            ,element = layui.element
+            ,carousel = layui.carousel
+            ,util = layui.util;
+
+        /*执行*/
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+    });
+</script>
+</body>
+</html>

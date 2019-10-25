@@ -67,9 +67,7 @@ class Login extends BaseController
             $data = ['status'=>false,'info'=>'账户/密码有误'];
             
         }
-        
         return json($data);
-
     }
     // 请求退出
     public function Logout()

@@ -21,14 +21,14 @@
         <div class="layui-carousel" id="carousel_news">
             <i class="fa fa-volume-down"></i>
             <div>
-                <div id="index_ad_div"><a href="javascript:;">网站正在开发中......</a></div>
+                <div id="index_ad_div"></div>
             </div>
         </div>
     </div>
     <div class="layui-container carousel-big-news" id="carousel_div">
         <div class="layui-carousel" id="carousel_index">
-            <div carousel-item>
-                <div><a href=""><img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/carouse/gq70.jpg" ></a></div>
+            <div carousel-item>{volist name="carousels" id="vo"}
+                <div><a href="{$vo.url}"><img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/images/carousel/{$vo.id}.jpg" ></a></div>{/volist}
             </div>
         </div>
     </div>
@@ -118,6 +118,7 @@
     </div>
     <!-- Footer -->
     {include file="tpl/footer" /}
+    {include file="tpl/baidu_autopush" /}
 
 <!-- 你的HTML代码 END -->
 
@@ -160,14 +161,14 @@
 
 
         });
-        var ad_content_arr = ['<a href="javascript:;">网站正在开发中......</a>','<a href="javascript:;">正在紧张准备中,欢迎关注!</a>'];
+        var ad_content_arr = ['null'{volist name="notifications" id="vo"},'<a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('notification/detial',array('id'=>$vo['id']))}">{$vo.title}</a>'{/volist}];
         var ad_content_index = 0;
-        $("#index_ad_div").html(ad_content_arr[0]);
+        $("#index_ad_div").html(ad_content_arr[1]);
         function index_ad() {
             $("#index_ad_div").fadeOut();
-            window.setTimeout(function () { $("#index_ad_div").html(ad_content_arr[ad_content_index]);},400)
+            window.setTimeout(function () { $("#index_ad_div").html(ad_content_arr[ad_content_index+1]);},400)
             $("#index_ad_div").fadeIn();
-            ad_content_index = (ad_content_index+1)%ad_content_arr.length;
+            ad_content_index = (ad_content_index+1)%(ad_content_arr.length-1);
         }
 
     });

@@ -3,10 +3,11 @@ namespace app\index\model;
 use think\Model;
 
 
-class Article extends Model{
-    protected $table = 'articles';
+class Draft extends Model{
+    protected $table = 'drafts';
     protected $autoWriteTimestamp=true;
-    protected $createTime = 'create_time';
+    protected $updateTime = 'create_time';
+    protected $createTime = false;
     protected $readonly = ['id','create_time'];
 
 }

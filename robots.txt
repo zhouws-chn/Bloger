@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /index/user/
+Disallow: /index/draft/
+Disallow: /index/admin/
+Sitemap: https://blog.zhouws.com/sitemap.xml

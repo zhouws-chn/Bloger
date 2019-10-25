@@ -21,7 +21,7 @@ ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PH
 
 
 ## 作者
-周旺生(http://feitiger.com)
+周旺生(http://zhouws.com)
 
 ## 升级版本
 [版本升级日志](update.md)

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="utf-8">
@@ -6,6 +6,7 @@
     <title>个人中心 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
     <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/tableFilter.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
     <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
@@ -17,15 +18,23 @@
 {include file="tpl/header" /}
 <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
     <div class="my-zone">
-        <div class="layui-tab">
+        <div class="layui-tab" lay-filter="user_tab">
             <ul class="layui-tab-title">
-                <li class="layui-this">个人信息</li>
-                <li>网站管理</li>
+                <li class="layui-this" lay-id="1">个人信息</li>
+                <li lay-id="2">草稿箱</li>
+                <li lay-id="3">文章管理</li>
+                <li lay-id="9">网站管理</li>
 
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
                     {include file="tpl/my_zone_tab_user_data" /}
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-hide" id="drafts_filter" lay-filter="drafts_filter"></table> <!-- 草稿箱 -->
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-hide" id="article_list_filter" lay-filter="article_list_filter"></table>
                 </div>
                 <div class="layui-tab-item">
 
@@ -53,6 +62,23 @@
 {include file="tpl/footer" /}
 <!-- 你的HTML代码 END -->
 
+<script type="text/html" id="article_operaTools">
+    <a class="layui-btn layui-btn-xs" lay-event="article_edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="article_del">删除</a>
+</script>
+<script type="text/html" id="draft_operaTools">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="draft_preview">预览</a>
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="draft_push">发布</a>
+    <a class="layui-btn layui-btn-xs" lay-event="draft_edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="draft_del">删除</a>
+</script>
+
+
+<script type="text/html" id="drafts_toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="drafts_add">添加草稿</button>
+    </div>
+</script>
 <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 <!--[if lt IE 9]>
 <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
@@ -60,14 +86,17 @@
 <![endif]-->
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.js"></script>
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+
 <script>
     /* 一般直接写在一个js文件中 */
-    layui.use(['layer', 'form','util','element'], function(){
+    layui.use(['layer', 'form','util','element','table','tableFilter'], function(){
         var layer = layui.layer
             ,$=layui.jquery
             ,form = layui.form
             ,element = layui.element
-            ,util = layui.util;
+            ,util = layui.util
+            ,table = layui.table
+            ,tableFilter = layui.tableFilter;
 
         util.fixbar({
             top: true
@@ -80,7 +109,116 @@
                 ,'密码必须是6到18位,且不能出现空格'
             ]
         });
+/* 文章管理 */
+        var tableFilterIns = tableFilter.render({
+            'elem' : '#article_list_filter',
+            'mode' : 'api',
+            'filters' : [{field: 'cate_name', type:'radio', url:"{:url('User/cateList')}"}, {field: 'title', type:'input'}],
+            'done': function(filters){
+            }
+        });
+        articles_table = table.render({
+            elem: '#article_list_filter'
+            ,url:"{:url('User/articleLists')}"
+            ,title: '文章管理表'
+            ,filter:true
+            ,cols: [[
+                {type:'numbers', title:'序号', width:60}
+                ,{field:'title', minWidth:240, title:'标题'}
+                ,{field:'cate_name', title:'所属栏目', align:'center',filter:true, width:150}
+                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
+                ,{title:'操作', align:'center',toolbar: '#article_operaTools',width:120}
+            ]]
+            ,page: true
+            ,done: function(res, curr, count){
+                tableFilterIns.reload();
+            }
+        });
 
+
+        table.on('tool(article_list_filter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'article_del'){
+                layer.confirm('确认删除此文章吗?<br />'+data['title'], function(index){
+                    var jsondata = new Object({"id":data['id']});
+                    $.post("{:url('Article/delete')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('删除成功', {icon: 1});
+                            obj.del();
+                        }else{
+                            layer.msg('删除失败', {icon: 2});
+                            layer.close(index);
+                        }
+                    });
+                });
+            } else if(obj.event === 'article_edit'){
+                window.location.href='/index/article/updatearticle/id/'+data['id']+'.html';
+            }
+        });
+/* 文章管理 -- END -- */
+/* 草稿箱 */
+        table.render({
+            elem: '#drafts_filter'
+            ,url:"{:url('Draft/draftsLists')}"
+            ,title: '草稿箱'
+            ,toolbar: '#drafts_toolbar'
+            ,cols: [[
+                {type:'numbers', title:'序号', width:60}
+                ,{field:'title', minWidth:240, title:'标题'}
+                ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
+                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
+                ,{title:'操作', align:'center',toolbar: '#draft_operaTools',width:240}
+            ]]
+            ,page: true
+
+        });
+        tableFilter.render({
+            'elem' : '#drafts_filter',
+            'mode' : 'local',
+            'filters' : [{field: 'cate_name', type:'checkbox'},{field: 'title', type:'input'}],
+            'done': function(filters){
+            }
+        });
+        table.on('toolbar(drafts_filter)', function(obj){
+            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
+        });
+        table.on('tool(drafts_filter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'draft_edit'){
+                window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/editDraft')}?id="+data['id'];
+            } else if(obj.event === 'draft_del'){
+                layer.confirm('确认删除此草稿吗?<br />'+data['title'], function(index){
+                    var jsondata = new Object({"id":data['id']});
+                    $.post("{:url('Draft/delete')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('删除成功', {icon: 1});
+                            obj.del();
+                        }else{
+                            layer.msg('删除失败', {icon: 2});
+                            layer.close(index);
+                        }
+                    });
+                });
+            } else if(obj.event === 'draft_push'){
+                layer.confirm('确认发布吗?<br />'+data['title'], function(index){
+                    var jsondata = new Object({"id":data['id']});
+                    $.post("{:url('Draft/pushArticle')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('发布成功', {icon: 1});
+                            obj.del();
+                        }else{
+                            layer.msg('发布失败', {icon: 2});
+                            layer.close(index);
+                        }
+                    });
+                });
+            } else if(obj.event === 'draft_preview'){
+                window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/previewDraft')}?id="+data['id']);
+            }
+        });
+/* 草稿箱 -- END -- */
         form.on('submit(updateUserData)', function(data){
             layer.confirm('您确认修改资料吗？', {
                 btn: ['确认','取消']
@@ -107,12 +245,26 @@
             $.post("{:url('User/verifyAdmin')}",jsondata,function(res){
                 if(res.status) {
                     layer.msg(res.info,{time:2500});
-                    setTimeout(function(){window.location.reload();},2400);
+                    setTimeout(function(){window.location.href = location.href+'?time='+((new Date()).getTime());},400);
                 }else{
                     layer.msg(res.info,{time:2500});
                 }
             });
+            return false;
         });
+
+        element.tabChange('user_tab', {$tab});
+        function Appendzero(obj) {
+            if (obj < 10) return "0" + "" + obj;
+            else return obj;
+        }
+        function toTimeString(data) {
+            var now = new Date(data.create_time*1000);
+            var year =now.getFullYear();
+            var month =Appendzero(now.getMonth()+1);
+            var date=Appendzero(now.getDate());
+            return year+'-'+month+'-'+date;
+        }
     });
 
 

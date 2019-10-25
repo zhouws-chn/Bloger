@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>修改轮播图 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.css"  type="text/css">
+</head>
+<body>
+<div style="margin-top: 20px;">
+
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">轮播图标题</label>
+            <div class="layui-input-inline" style="width: 280px;">
+                <input type="text" name="name" required  lay-verify="required" placeholder="请输入新的标题" value="{$this_carousel.name}" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">链接地址</label>
+            <div class="layui-input-inline" style="width: 280px;">
+                <input type="text" name="url" required  lay-verify="required" placeholder="请输入链接地址" value="{$this_carousel.url}" class="layui-input" minlength="4">
+            </div>
+            <div class="layui-form-mid layui-word-aux"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">优先级别</label>
+            <div  class="layui-form-mid layui-word-aux"  style="width: 250px;margin-top: 5px;margin-left: 5px;" >
+                <div id="slideTest1" name="sd"></div>
+            </div>
+            <a href="javascript:;" onclick="priorty_tips_btn()" id="priorty_tips"><i class="fa fa-question-circle-o" style="margin-top: 10px;" aria-hidden="true"></i></a>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即修改</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    /* 一般直接写在一个js文件中 */
+    layui.use(['layer', 'form','util','element','table','slider'], function() {
+        var layer = layui.layer
+            , $ = layui.jquery
+            , form = layui.form
+            , element = layui.element
+            , util = layui.util
+            , table = layui.table
+            , slider = layui.slider;
+
+        util.fixbar({
+            top: true
+            , showHeight: 100
+            , click: function (type) {
+            }
+        });
+        var slider_value = {$this_carousel['priority']};
+        slider.render({
+            elem: '#slideTest1'  //绑定元素
+            ,input: true //输入框
+            ,min: 1
+            ,max: 99
+            ,value: slider_value
+            ,change: function(value){
+                slider_value = value;
+            }
+        });
+
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            var jsondata = data.field;
+            jsondata.priority = slider_value;
+            jsondata.id = {$this_carousel['id']};
+            $.post("{:url('Carousel/editProcess')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg(res.info,{time:2500});
+                    setTimeout(function(){ parent.layer.close(parent.layer.getFrameIndex(window.name));parent.window.location.reload();},2400);
+                }else{
+                    layer.msg(res.info,{time:2500});
+                }
+            });
+            return false;
+        });
+
+    });
+    function priorty_tips_btn() {
+        layer.tips('数字越小,优先等级越高', '#priorty_tips');
+    }
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
     <header>
-        <div class="layui-bg-cyan">
+        <div class="layui-bg-cyan" style="z-index:999;">
             <div class="layui-container">
 
                 <ul  class="layui-nav layui-bg-cyan" >
@@ -14,14 +14,14 @@
                         <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}">{$vo.name}</a>
                     </li>{/if}
                     {/volist}
-                    <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" >
+                    <li class="layui-nav-item layui-layout-right  layui-hide-xs layui-hide-sm layui-show-md-inline-block" style="z-index: 990;">
                         {if condition=' $Request.session.uname!=null'}
                         <a href="javascript:;">{$Request.session.uname}</a>
                         <dl class="layui-nav-child">
                             <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('User/myZone')}">个人中心</a></dd>
-                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}">文章发布</a></dd>{if condition=' $Request.session.uAdmin!=null'}
-                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Cate/adminList')}">栏目管理</a></dd>{/if}
-                            <dd><a href="javascript:;">草稿箱</a></dd>
+                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}">文章发布</a></dd>
+                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('User/myZone')}?tab=3">文章管理</a></dd>
+                            <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('User/myZone')}?tab=2">草稿箱</a></dd>
                             <dd><a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Login/logout')}">退了</a></dd>
                         </dl>
                         {else/}

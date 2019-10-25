@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>修改文章 - {$article.title} - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <title>编辑草稿 - {$draft.title} - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
@@ -12,71 +12,72 @@
 <body class="web-body-content">
 <!-- Header -->
 {include file="tpl/header" /}
-    <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
+<div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
 
-        <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> 修改文章
-    </div>
+    <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> 编辑草稿
+</div>
 
-    <div class="layui-container article_detial" style="background-color: #fffFFF;padding-top: 10px;">
+<div class="layui-container article_detial" style="background-color: #fffFFF;padding-top: 10px;">
 
-        <form class="layui-form" >
-            <div class="layui-form-item">
-                <label class="layui-form-label">标题</label>
-                <div class="layui-input-block">
-                    <input type="text" name="title" autocomplete="off" placeholder="请输入标题" class="layui-input" lay-verify="required" value="{$article.title}">
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" autocomplete="off" placeholder="请输入标题" class="layui-input" lay-verify="required" value="{$draft.title}">
+            </div>
+        </div>
+        <input type="hidden" name="id" value="{$draft.id}">
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">摘要</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" name="abstract" class="layui-textarea" maxlength="499" style="min-height: 30px;">{if condition=' $draft.abstract_is!=0'}{$draft.abstract}{/if}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="display: flex;">
+            <div class="layui-inline" >
+                <label class="layui-form-label">类别</label>
+                <div class="layui-input-inline">
+                    <select name="cate_name" lay-verify="required" lay-search="" id="cate_id">
+                        <option value="">直接选择或搜索选择</option>
+                        {volist name="cates" id="vo"}
+                        {if condition='$draft.cate_name==$vo.name' }
+                        <option value="{$i}" selected="selected">{$vo.name}</option>
+                        {else/}
+                        <option value="{$i}">{$vo.name}</option>
+                        {/if}
+                        {/volist}
+                    </select>
                 </div>
+                <input type="checkbox" name="get_pic" title="远程图片本地化">
             </div>
-            <input type="hidden" name="id" value="{$article.id}">
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">摘要</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" name="abstract" class="layui-textarea" maxlength="499" style="min-height: 30px;">{if condition=' $article.abstract_is!=0'}{$article.abstract}{/if}</textarea>
-                </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+
+            <label class="layui-form-label">来源</label>
+
+            <div class="layui-input-block" >{if condition=' strlen($draft.origin_url)<4'}
+                <input type="text" name="origin_url" autocomplete="off" placeholder="原创请留空，转载请输入来源地址" class="layui-input" style="width: 240px;">
+                {else/}
+                <input type="text" value="{$draft.origin_url}" name="origin_url" autocomplete="off" placeholder="原创请留空，转载请输入来源地址" class="layui-input" style="width: 240px;">
+                {/if}
             </div>
 
-            <div class="layui-form-item" style="display: flex;">
-                <div class="layui-inline" >
-                    <label class="layui-form-label">类别</label>
-                    <div class="layui-input-inline">
-                        <select name="cate_name" lay-verify="required" lay-search="" id="cate_id">
-                            <option value="">直接选择或搜索选择</option>
-                            {volist name="cates" id="vo"}
-                            {if condition='$article.cate_name==$vo.name' }
-                            <option value="{$i}" selected="selected">{$vo.name}</option>
-                            {else/}
-                            <option value="{$i}">{$vo.name}</option>
-                            {/if}
-                            {/volist}
-                        </select>
-                    </div>
-                    <input type="checkbox" name="get_pic" title="远程图片本地化">
-                </div>
+        </div>
+        <div class="layui-form-item layui-form-text" >
+            <div class="layui-input-block" style="z-index:1;">
+                <!-- 加载编辑器的容器 -->
+                <textarea placeholder="请输入内容" name="article_content" id="article_container" >{$draft.content}</textarea>
             </div>
-            <div class="layui-form-item layui-form-text">
-
-                <label class="layui-form-label">来源</label>
-
-                <div class="layui-input-block" >{if condition=' strlen($article.origin_url)<4'}
-                    <input type="text" name="origin_url" autocomplete="off" placeholder="原创请留空，转载请输入来源地址" class="layui-input" style="width: 240px;">
-                    {else/}
-                    <input type="text" value="{$article.origin_url}" name="origin_url" autocomplete="off" placeholder="原创请留空，转载请输入来源地址" class="layui-input" style="width: 240px;">
-                    {/if}
-                </div>
-
-            </div>
-            <div class="layui-form-item layui-form-text" >
-                <div class="layui-input-block" style="z-index:1;">
-                    <!-- 加载编辑器的容器 -->
-                    <textarea placeholder="请输入内容" name="article_content" id="article_container" >{$article.content}</textarea>
-                </div>
-            </div>
-            <div class="layui-form-item " style="margin-left: 110px;">
-                <button class="layui-btn" lay-submit lay-filter="publish_bt" id="publish_bt_id">修改</button>
-            </div>
-        </form>
-    </div>
-    <!-- Footer -->
-    {include file="tpl/footer" /}
+        </div>
+        <div class="layui-form-item " style="margin-left: 110px;">
+            <button class="layui-btn" lay-submit lay-filter="publish_bt" id="publish_bt_id">发布</button>
+            <button class="layui-btn" lay-submit lay-filter="draft_bt" id="draft_bt_id">存草稿</button>
+        </div>
+    </form>
+</div>
+<!-- Footer -->
+{include file="tpl/footer" /}
 <!-- 你的HTML代码 END -->
 
 <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
@@ -152,10 +153,27 @@
             var options = document.getElementById("cate_id").options;
             jsondata.cate_name = options[jsondata.cate_name].text;
             jsondata.article_content = tinymce.activeEditor.getContent();
-            $.post("{:url('Article/changeArticle')}",jsondata,function(res){
+            $.post("{:url('Draft/submitArticle')}",jsondata,function(res){
                 if(res.status) {
                     layer.msg(res.info,{time:2500});
-                    setTimeout(function(){window.location.href="{:url('article/detial',array('id'=>$article['id']))}"},2400);
+                    setTimeout(function(){window.location.href="{:url('index/index')}"},2400);
+                }else{
+                    layer.msg(res.info,{time:2500});
+                    $("#publish_bt_id").removeClass("layui-btn-disabled").prop('disabled',false);
+                }
+            });
+            return false;
+        });
+        form.on('submit(draft_bt)',function(data){
+            $("#draft_bt_id").addClass("layui-btn-disabled").prop('disabled',true);
+            var jsondata = data.field;
+            var options = document.getElementById("cate_id").options;
+            jsondata.cate_name = options[jsondata.cate_name].text;
+            jsondata.article_content = tinymce.activeEditor.getContent();
+            $.post("{:url('Draft/saveDraft')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg(res.info,{time:2500});
+                    setTimeout(function(){window.location.href="{:url('index/index')}"},2400);
                 }else{
                     layer.msg(res.info,{time:2500});
                     $("#publish_bt_id").removeClass("layui-btn-disabled").prop('disabled',false);
