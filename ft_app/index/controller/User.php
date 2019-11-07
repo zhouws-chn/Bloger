@@ -41,7 +41,7 @@ class User extends UserController
         }
         $uname = input('name');
         $uemail = input('email');
-
+        $description = input("desc");
         $passwd = input("oPassword");
         if(strlen($passwd)<6){
             $data = ['status'=>false,'info'=>'密码格式错误'];
@@ -73,6 +73,7 @@ class User extends UserController
         }
         $uData['name'] = $uname;
         $uData['email'] = $uemail;
+        $uData['description'] = $description;
         $uuRes = $logicUser->updateUserData($uData);
 
         if($uuRes){

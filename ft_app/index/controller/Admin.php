@@ -34,7 +34,7 @@ class Admin extends AdminController
         }
         $limit_num = input("limit");
         $article_num = \think\Loader::model('Cate')::count();
-        $articles = \think\Loader::model('Cate')::order('id', 'desc')->paginate($limit_num);
+        $articles = \think\Loader::model('Cate')::order('priority', 'asc')->paginate($limit_num);
         $data['code'] = 0;
         $data['msg'] = "top_msg";
         $data['count'] = $article_num;

@@ -49,23 +49,20 @@
         <div class="article_content">{$article.content}
         <hr>
         <div class="article_source">{if condition=' strlen($article.origin_url)<4'}
-        <span>文章来源:<a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}">__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}</a></span> <span style="float:right;">文章最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
+        <span>来源:<a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}">__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}</a></span> <span style="float:right;">最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
         {else/}
-            <span>文章来源:<a href="{$article.origin_url}">{$article.origin_url}</a></span> <span style="float:right;">文章最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
+            <span>来源:<a href="{$article.origin_url}" title="{$article.origin_url}">{$article.origin_url}</a></span> <span style="float:right;">最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
         {/if}
         </div></div>
 
     </div>
     <div class="layui-container admin-article-power" style="background-color: ghostwhite;margin-top: 20px;">
         {if condition=' $Request.session.uname!=null'}
-
         <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/updateArticle',array('id'=>$article['id']))}" class="layui-btn layui-btn-xs">修改</a> <button class="layui-btn layui-btn-xs">略缩图</button> <button lay-submit lay-filter="deleteArticle" class="layui-btn layui-btn-xs">删除</button>
-
         {/if}
     </div>
     <!-- Footer -->
     {include file="tpl/footer" /}
-    {include file="tpl/baidu_autopush" /}
 <!-- 你的HTML代码 END -->
 
 
@@ -115,4 +112,5 @@
 
 </script>
 </body>
+{include file="tpl/baidu_autopush" /}
 </html>

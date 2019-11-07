@@ -17,11 +17,12 @@ ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PH
 
 
 ## 安装步骤
-修改database.conf文件，添加数据库信息
+修改database.conf文件，添加数据库信息.
+测试账户: test@test.com  密码:123456
 
 
 ## 作者
-周旺生(http://zhouws.com)
+周旺生(https://www.zhouws.com、https://blog.zhouws.com)
 
 ## 升级版本
 [版本升级日志](update.md)

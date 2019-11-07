@@ -16,8 +16,10 @@ class Index extends BaseController
 
         $notifications = \think\Loader::model('Notification')::field('id,title,create_time')->order('create_time','desc')->select();
         if(!$notifications){
+            // TODO: 没有公告的时候应该处理一下，否则首页将无法正常显示
             return $this->error("公告不存在");
         }
+
         $this->assign('notifications',$notifications);
         
         return $this->fetch();

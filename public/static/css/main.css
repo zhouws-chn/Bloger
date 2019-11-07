@@ -52,7 +52,11 @@ white-space:nowrap;
 
 .web-article-item .article_info item1{
 margin-right: 20px;
-min-width:42px;
+width:90px;
+}
+.web-article-item .article_info item2{
+    margin-right: 20px;
+    width:45px;
 }
 
 .web-article-item .article_info i{
@@ -109,6 +113,11 @@ width:90px;
 }
 .index-recommand .layui-card-body ul li a i{ 
 margin-right: 10px;
+width: 12px;
+}
+.index-recommand .layui-card-body ul li a span{
+    width: 68px;
+    display: inline-block;
 }
 .layui-nav .layui-nav-item a:hover{
 background-color:lightgreen;
@@ -227,4 +236,12 @@ padding:20px 0px;
 
 .article_detial  .article_source a:visited{
     color: lightgray;
+}
+.article_detial  .article_source span{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 320px;
+    display: inline-block;
+    color: gray;
 }

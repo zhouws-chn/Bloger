@@ -58,12 +58,12 @@
                                 <item1>
                                     <i class="fa fa-calendar" aria-hidden="true"></i> {$vo.create_time|date='Y-m-d',###}
                                 </item1>
-                                <item1>
+                                <item2>
                                     <i class="fa fa-fire" aria-hidden="true"></i> {$vo.pv}
-                                </item1>
-                                <item1>
+                                </item2>
+                                <item2>
                                     <i class="fa fa-comments-o" aria-hidden="true"></i> 0
-                                </item1>
+                                </item2>
 
                             </div>
                         </div>
@@ -88,13 +88,16 @@
 
                         <ul class="my_contact">
                             <li >
+                                <a href="https://www.zhouws.com" title="个人主页" target="_blank"> <i class="fa fa-home"></i></a>
+                            </li>
+                            <li >
                                 <a href="" title="WeChat:ynxf66"> <i class="fa fa-weixin"></i></a>
                             </li>
                             <li >
                                 <a href="" title="QQ:2216691777"> <i class="fa fa-qq"></i></a>
                             </li>
                             <li >
-                                <a href="https://github.com/zhouws-chn" title="Github:https://github.com/zhouws-chn" target="_blank"> <i class="fa fa-github"></i></a>
+                                <a href="https://github.com/zhouws-chn" title="Github:zhouws-chn" target="_blank"> <i class="fa fa-github"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -106,7 +109,7 @@
                         <ul>
                             {volist name="cates" id="vo"}
                             <li >
-                                <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                                <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i><span>{$vo.name}</span></a>
                             </li>
                             {/volist}
                         </ul>
@@ -118,7 +121,6 @@
     </div>
     <!-- Footer -->
     {include file="tpl/footer" /}
-    {include file="tpl/baidu_autopush" /}
 
 <!-- 你的HTML代码 END -->
 
@@ -185,4 +187,5 @@
     }
 </script>
 </body>
+{include file="tpl/baidu_autopush" /}
 </html>

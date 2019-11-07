@@ -62,6 +62,11 @@ class User extends Model{
                 $uData['email'] = $data['email'];
             }
         }
+        if(!empty($data['description'])){
+            if($data['description']!=$user['description']){
+                $uData['description'] = $data['description'];
+            }
+        }
         if(!empty($uData)){
             if( $user->save($uData)){
                 Session::set('uname',$user['name']);
