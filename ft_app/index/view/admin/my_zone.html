@@ -237,7 +237,7 @@
                 layer.confirm('真的删除此栏目吗?(删除后不可恢复)', function(index){
                     layer.prompt({title: '请输入密码:', formType: 1, maxlength:18}, function(pass, index){
                         layer.close(index);
-                        var jsondata = new Object({"id":"{$vo['id']}"});
+                        var jsondata = new Object({"id":data['id']});
                         jsondata['passwd'] = pass;
                         $.post("{:url('Cate/delete')}",jsondata,function(res){
                             if(res.status) {

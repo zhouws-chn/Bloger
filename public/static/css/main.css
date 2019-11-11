@@ -222,7 +222,7 @@ font-size:14px;
 .article_detial .article_content{
 font-size:16px;
 line-height:34px;
-padding:20px 0px;
+padding-top:20px;
 }
 
 .article_detial  .article_source{
@@ -235,9 +235,9 @@ padding:20px 0px;
 }
 
 .article_detial  .article_source a:visited{
-    color: lightgray;
+    color: gray;
 }
-.article_detial  .article_source span{
+.article_detial  .article_source .article_end_url{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

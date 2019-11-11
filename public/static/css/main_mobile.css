@@ -169,7 +169,7 @@ font-size:14px;
 .article_detial .article_content{
 font-size:16px;
 line-height:28px;
-padding:10px 0px;
+padding-top:10px;
 }
 
 .web-body-content{
@@ -340,5 +340,5 @@ width:auto;
 }
 
 .article_detial  .article_source a:visited{
-    color: lightgray;
+    color: gray;
 }

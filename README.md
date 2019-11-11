@@ -21,8 +21,14 @@ ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PH
 测试账户: test@test.com  密码:123456
 
 
+
+## 安全须知
+
+为了您网站的安全考虑，您可以自己修改 ft_app 文件夹为您满意的名称，并同步修改位于 public/index.php 中的文件路径。
+
+
 ## 作者
-周旺生(https://www.zhouws.com、https://blog.zhouws.com)
+周旺生([https://www.zhouws.com](https://www.zhouws.com)、[https://blog.zhouws.com](https://blog.zhouws.com))
 
 ## 升级版本
 [版本升级日志](update.md)

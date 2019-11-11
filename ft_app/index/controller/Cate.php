@@ -19,6 +19,7 @@ class Cate extends AdminController
         }
         $id = input('id');
         $passwd = input('passwd');
+
         if(empty($id)){
             $data = ['status'=>false,'info'=>"数据有误"];
             return json($data);
