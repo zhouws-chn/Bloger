@@ -40,6 +40,11 @@ class Carousel extends AdminController
             dump('error.');
             die;
         }
+        $count = \think\Loader::model('Carousel')::count();
+        if($count<2){
+            $data = ['status'=>false,'info'=>"不可以删除全部的轮播图"];
+            return json($data);
+        }
 
         $carousel_id = input('id');
         $carousel = \think\Loader::model('Carousel')::get(['id'=>$carousel_id]);

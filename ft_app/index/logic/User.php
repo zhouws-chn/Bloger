@@ -4,6 +4,16 @@ use think\Model;
 use think\Session;
 class User extends Model{
 
+    public function LoginSetSession( $data ){
+        Session::set('uname',$data['name']);
+        Session::set('uid',$data['id']);
+        Session::set('uhead_img',$data['head_img']);
+    }
+
+    public function LogoutSetSession(){
+        Session::clear();
+    }
+
     public function LoginVertify( $data ) {
         $user = \think\Loader::model('User')::get(['email'=>$data['email']]);
 
@@ -13,12 +23,25 @@ class User extends Model{
                 $user->last_login_time = $user['this_login_time'];
                 $user->this_login_time = time();
                 $user->save();
-                Session::set('uname',$user['name']);
-                Session::set('uid',$user['id']);
+                $this->LoginSetSession($user);
                 return true;
             }else{
                 return false;
             }
+        }else{
+            return false;
+        }
+    }
+
+    public function QQLoginVertify( $openid ) {
+        $user = \think\Loader::model('User')::get(['qqopenid'=>$openid]);
+
+        if(isset($user)){
+            $user->last_login_time = $user['this_login_time'];
+            $user->this_login_time = time();
+            $user->save();
+            $this->LoginSetSession($user);
+            return true;
         }else{
             return false;
         }
@@ -69,7 +92,7 @@ class User extends Model{
         }
         if(!empty($uData)){
             if( $user->save($uData)){
-                Session::set('uname',$user['name']);
+                $this->LoginSetSession($user);
             }else{
                 return false;
             }

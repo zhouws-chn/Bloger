@@ -254,4 +254,12 @@ return [
         'expire' => 120,    // 过期时间
         'useNoise' => false // 关闭验证码杂点
     ],
+    // QQ 互联配置 在config.php中添加
+    'auth' => ['qqconnect' => [
+        'appid' => '101831362',
+        'appkey' => '63459cff7884cdacc0c1df425d3624e2',
+        'callback' => 'https://blog.zhouws.com/index/login/connect',
+        'scope' => 'get_user_info',
+        'errorReport' => true
+    ]],
 ];

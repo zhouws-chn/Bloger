@@ -18,7 +18,7 @@ class Article extends BaseController
         }
 
         $article_id = input('id');
-        $article = \think\Loader::model('Article')::get(['id'=>$article_id]);
+        $article = \think\Loader::model('Article')::get(['id'=>$article_id],'cate');
         if(!$article){
             return $this->error("文章不存在");
         }
@@ -29,7 +29,14 @@ class Article extends BaseController
         }
         
         $this->assign('article',$article);
-
+        $replies = \think\Loader::model('Reply')->with('user')->where(['aid'=>$article_id]);
+        if(!$replies){
+            $this->assign('replies',null);
+        }else{
+            $replies = $replies->order('create_time','desc')->select();
+           // dump($replies);die;
+            $this->assign('replies',$replies);
+        }
         return $this->fetch('article');
     }
     public function cate()
@@ -41,7 +48,7 @@ class Article extends BaseController
             die;
         }
         $cate_id = input('id');
-        $articles = \think\Loader::model('Article')::where('cate_id',$cate_id)->field('id,title,abstract,title_img,cate_id,cate_name,pv,create_time,update_time')->order('create_time','desc')->limit(10)->select();
+        $articles = \think\Loader::model('Article')::with('cate')->where('cate_id',$cate_id)->field('id,title,abstract,title_img,cate_id,pv,create_time,update_time')->order('create_time','desc')->limit(10)->select();
         if(!$articles) {
             return $this->error('没有文章');
         }

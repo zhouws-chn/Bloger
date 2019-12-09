@@ -122,13 +122,17 @@ class User extends UserController
         $limit_num = input("limit");
         $cate_name = input("cate_name");
         $articlesModel = \think\Loader::model('Article');
-
-        if(is_null($cate_name)){
-            $articles = $articlesModel::where(['author_id'=>Session::get('uid')]);
+        $article_num = 0;
+        if(is_null($cate_name) || strlen($cate_name)==0){
+            $articles = \think\Loader::model('Article')::field('id,title,cate_id,create_time')->with('cate')->where(['author_id'=>Session::get('uid')]);
+            $article_num = $articlesModel::where(['author_id'=>Session::get('uid')])->count();
         } else {
-            $articles = $articlesModel::where(['author_id'=>Session::get('uid'),'cate_name'=>$cate_name]);
-        }
+            $cate = \think\Loader::model('Cate')::where(['name'=>$cate_name])->find();
 
+            $articles = \think\Loader::model('Article')::field('id,title,cate_id,create_time')->with('cate')->where(['author_id'=>Session::get('uid'),'cate_id'=>$cate->id]);
+            $article_num = $articlesModel::where(['author_id'=>Session::get('uid'),'cate_id'=>$cate->id])->count();
+        }
+        //dump($articles);die;
         if(empty($articles)){
             $data['code'] = 0;
             $data['msg'] = "top_msg";
@@ -137,14 +141,15 @@ class User extends UserController
             return json($data);
         }
 
-        $article_items = $articles->field('id,title,cate_name,create_time')->order('id', 'desc')->paginate($limit_num)->all();
-        $article_num = $articles->field('id,title,cate_name,create_time')->order('id', 'desc')->count();
-        $articles = collection($article_items)->toArray();
+        $article_items = $articles->order('id', 'desc')->paginate($limit_num)->all();
+
+        $articles = $article_items;//collection($article_items)->toArray();
         //$article_num = count($articles);
         $data['code'] = 0;
         $data['msg'] = "top_msg";
         $data['count'] = $article_num;
         $data['data'] = $articles;
+
         return json($data);
     }
 

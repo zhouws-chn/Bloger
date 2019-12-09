@@ -6,7 +6,7 @@ class User extends Validate{
    protected $rule = [
         'email' => 'require|email|unique:users',
         'passwd' => 'require',
-        'name' => 'require|max:16'
+        'name' => 'require|max:16|min:2|unique:users'
    ];
 
    protected $message = [

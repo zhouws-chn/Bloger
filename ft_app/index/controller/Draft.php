@@ -24,7 +24,7 @@ class Draft extends UserController
         if(is_null($draft_id)){
             die;
         }
-        $article = \think\Loader::model('Draft')::get(['id'=>$draft_id]);
+        $article = \think\Loader::model('Draft')::get(['id'=>$draft_id],'cate');
         if(!$article){
             return $this->error("草稿不存在");
         }
@@ -43,7 +43,7 @@ class Draft extends UserController
             die;
         }
         $draft_id = input('id');
-        $draft = \think\Loader::model('Draft')::get(['id'=>$draft_id]);
+        $draft = \think\Loader::model('Draft')::get(['id'=>$draft_id],'cate');
         if(!$draft) {
             return $this->error('没有文章');
         }
@@ -62,8 +62,8 @@ class Draft extends UserController
         $data=[
             'title' => input('title'),
             'content' => input('article_content'),
-            'cate_name' => input('cate_name'),
             'abstract' => input('abstract'),
+            'cate_name' => input('cate_name'),
             'origin_url' => input('origin_url')
         ];
         $get_pic = input('get_pic');
@@ -114,7 +114,9 @@ class Draft extends UserController
             die;
         }
         $limit_num = input("limit");
-        $drafts = \think\Loader::model('Draft')::get(['author_id'=>Session::get('uid')]);
+        $drafts = \think\Loader::model('Draft')::field('id,title,cate_id,create_time')->with('cate')->where(['author_id'=>Session::get('uid')]);
+        $draft_num = \think\Loader::model('Draft')::where(['author_id'=>Session::get('uid')])->count();
+
         if(empty($drafts)){
             $data['code'] = 0;
             $data['msg'] = "top_msg";
@@ -122,12 +124,11 @@ class Draft extends UserController
             $data['data'] = [];
             return json($data);
         }
-        $draft_num = $drafts->count();
-        $draft_items = $drafts->field('id,title,cate_name,create_time')->order('create_time', 'desc')->paginate($limit_num);
+        $draft_items = $drafts->order('create_time', 'desc')->paginate($limit_num)->all();
         $data['code'] = 0;
         $data['msg'] = "top_msg";
         $data['count'] = $draft_num;
-        $data['data'] = $draft_items->toArray()['data'];
+        $data['data'] = $draft_items;
         return json($data);
     }
     /* 打开已存在的草稿并保存 */
@@ -214,7 +215,7 @@ class Draft extends UserController
             die;
         }
         $article_id = input('id');
-        $draft = \think\Loader::model('Draft')::get(['id'=>$article_id]);
+        $draft = \think\Loader::model('Draft')::get(['id'=>$article_id],'cate');
         if(empty($draft)){
             $data = ['status'=>true,'info'=>'error, not found Draft.'];
             return json($data);
@@ -222,6 +223,7 @@ class Draft extends UserController
         $draft_data = $draft->toArray();
 
         unset($draft_data['id']);
+
         $draft_data['create_time']=time();
         $article = \think\Loader::model('Article','logic');
         $res = $article->addArticle($draft_data);

@@ -28,6 +28,7 @@ class Draft extends Model{
             $data['abstract'] = preg_replace ( "/\s+(?=[\x{4e00}-\x{9fa5}]+)/u"," ",$data['abstract']);
             $data['abstract'] = mb_substr($data['abstract'],0,499);
         }
+        unset($data['cate_name']);
         $result = $article->validate(true)->save($data);
         if($result === false) {
             $res['status']=false;
@@ -62,6 +63,7 @@ class Draft extends Model{
             $data['abstract'] = preg_replace ( "/\s+(?=[\x{4e00}-\x{9fa5}]+)/u"," ",$data['abstract']);
             $data['abstract'] = mb_substr($data['abstract'],0,499);
         }
+        unset($data['cate_name']);
         $result = $article->validate(true)->save($data);
         if($result === false) {
             $res['status']=false;

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>table模块快速使用</title>
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+</head>
+<body>
+<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <form class="layui-form" style="margin-top: 10px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">网站标题</label>
+            <div class="layui-inline">
+                <input type="text" readonly="readonly" class="layui-input" value="__WEB_NAME__" width="300px">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">用户数量</label>
+            <div class="layui-inline" style="width: 80px">
+                <input type="text" readonly="readonly" value="{$sysdata.usercount}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">客户端IP</label>
+            <div class="layui-inline" style="width: 130px">
+                <input type="text" readonly="readonly" value="{$sysdata.clientip}" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">服务器IP</label>
+            <div class="layui-inline" style="width: 320px">
+                <input type="text" readonly="readonly" value="{$sysdata.SERVER_NAME} ({$sysdata.SERVER_ADDR})" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">PHP 版本</label>
+            <div class="layui-inline" style="width: 120px">
+                <input type="text" readonly="readonly" value="{$sysdata.PHP_VERSION}" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">系统信息</label>
+            <div class="layui-inline" style="width: 480px">
+                <input type="text" readonly="readonly" value="{$sysdata.PHP_OS}" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">服务器时间</label>
+            <div class="layui-inline">
+                <input type="text" readonly="readonly" value="{$sysdata.server_time}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: 100px;">运行时间</label>
+            <div class="layui-inline">
+                <input type="text" readonly="readonly" value="{$sysdata.webcreatetime|date='Y-m-d H:i',###}" class="layui-input" >
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    layui.use(['table','jquery','form'], function(){
+        var table = layui.table,
+            $ = layui.jquery,
+            form = layui.form;
+    });
+</script>
+</body>
+</html>

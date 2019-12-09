@@ -55,3 +55,48 @@ function pic_download_from_url($url, $path = 'uploads/images/')
 
     return '/'.$savePath . $filename;
 }
+
+
+function set_replace_str($key, $value)
+{
+    $old_value = Config::get('view_replace_str');
+    if(isset($old_value[$key])==false){
+        return false;
+    }
+    $old_value[$key] = $value;
+    $new_content = '<?php'.PHP_EOL.'return [ '.PHP_EOL.' \'view_replace_str\'  =>  ['.PHP_EOL;
+    foreach($old_value as $key => $value){
+        $new_content = $new_content.'\''.$key.'\'=>\''.$value.'\', '.PHP_EOL;
+    }
+    $new_content = $new_content.']];';
+    $filename = ROOT_PATH.'ft_app\\index\\config.php';
+    return file_put_contents($filename,$new_content);
+}
+
+/**
+ * 循环删除目录和文件
+ * @param string $dir_name
+ * @return bool
+ */
+function delete_dir_file($dir_name) {
+    $result = false;
+    if(is_dir($dir_name)){
+        if ($handle = opendir($dir_name)) {
+            while (false !== ($item = readdir($handle))) {
+                if ($item != '.' && $item != '..') {
+                    if (is_dir($dir_name . DS . $item)) {
+                        delete_dir_file($dir_name . DS . $item);
+                    } else {
+                        unlink($dir_name . DS . $item);
+                    }
+                }
+            }
+            closedir($handle);
+            if (rmdir($dir_name)) {
+                $result = true;
+            }
+        }
+    }
+    return $result;
+}
+

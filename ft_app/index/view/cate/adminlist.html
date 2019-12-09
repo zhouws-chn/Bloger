@@ -56,12 +56,12 @@
         <!-- 侧边栏 手机不显示 -->
         <div class="layui-col-md4 layui-hide-xs layui-hide-sm layui-show-md-inline-block index-sidebar">
             <div class="layui-card index-recommand">
-                <div class="layui-card-header"><i class="layui-icon layui-icon-component" ></i>推荐栏目</div>
+                <div class="layui-card-header"><i class="fa fa-delicious" aria-hidden="true"></i>推荐栏目</div>
                 <div class="layui-card-body">
                     <ul>
                         {volist name="cates" id="vo"}
                         <li >
-                            <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i>{$vo.name}</a>
+                            <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$vo['id']))}"><i class="fa fa-github"></i><span>{$vo.name}</span></a>
                         </li>
                         {/volist}
                     </ul>

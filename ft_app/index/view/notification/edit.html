@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>公告修改 - __WEB_NAME__ - 个人博客 - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.css"  type="text/css">
+</head>
+
+<body>
+<div style="margin-top: 20px;">
+
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">公告标题</label>
+            <div class="layui-input-inline" style="width: 720px;">
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入新的公告标题" class="layui-input" value="{$notification.title}">
+                <input type="text" name="id" hidden value="{$notification.id}">
+            </div>
+            <div class="layui-form-mid layui-word-aux"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">公告内容</label>
+            <div class="layui-input-block"  style="width: 720px;">
+                <textarea name="content" placeholder="请输入公告内容" required lay-verify="required"  class="layui-textarea" style=" min-height: 360px;">{$notification.content}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">修改公告</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    /* 一般直接写在一个js文件中 */
+    layui.use(['layer', 'form','util','element','table','slider'], function() {
+        var layer = layui.layer
+            , $ = layui.jquery
+            , form = layui.form
+            , element = layui.element
+            , util = layui.util;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            var jsondata = data.field;
+            $.post("{:url('Notification/edit_process')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg(res.info,{time:2500});
+                    setTimeout(function(){ parent.layer.close(parent.layer.getFrameIndex(window.name));parent.window.location.href="{:url('Admin/myZone')}?tab=6";},2400);
+                }else{
+                    layer.msg(res.info,{time:2500});
+                }
+            });
+            return false;
+        });
+
+    });
+
+
+</script>
+</body>
+</html>

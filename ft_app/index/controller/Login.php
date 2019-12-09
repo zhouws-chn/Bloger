@@ -6,6 +6,8 @@ use think\Session;
 use think\Request;
 use think\Validate;
 use app\index\logic\User;
+use loveteemo\qqconnect\QC;
+
 class Login extends BaseController
 {
     // 请求登陆界面
@@ -69,14 +71,64 @@ class Login extends BaseController
         }
         return json($data);
     }
+    public function qqlogin()
+    {
+        // 去掉非get请求
+        if(!request()->isGet())
+        {
+            dump('error.');
+            die;
+        }
+        if(Session::has('uname'))
+        {
+            // 已经登陆 直接返回到首页
+            return $this->error('已经登陆过了,不需要再次登陆');
+        }
+        $qc = new QC();
+        return redirect($qc->qq_login());
+    }
+
+    public function connect()
+    {
+        // 去掉非get请求
+        if(!request()->isGet())
+        {
+            dump('error.');
+            die;
+        }
+        if(Session::has('uname'))
+        {
+            // 已经登陆 直接返回到首页
+            return $this->error('已经登陆过了,不需要再次登陆');
+        }
+        $qc = new QC();
+        $access_token = $qc->qq_callback();    // access_token
+        $openid = $qc->get_openid();     // openid
+        $qc = new QC($access_token,$openid);
+        $qqUserInfo = $qc->get_user_info();
+        if (empty($openid) || empty($access_token) || count($qqUserInfo) <= 0) {
+            echo "获取用户信息异常,请重新尝试";
+            die;
+        }
+        $user = new User();
+        if( $user->QQLoginVertify($openid) )
+        {
+            return $this->success('登陆成功','/');
+        }else{
+            $data = ['status'=>false,'info'=>'这是一位新用户'];
+
+        }
+        return json($data);
+
+    }
     // 请求退出
     public function Logout()
     {
         if(Session::has('uname'))
         {
-            Session::delete('uAdmin');
-            Session::delete('uname');
-            return $this->success('您已退出登陆','/');
+            $user = new User();
+            $user->LogoutSetSession();
+            return $this->success('注销登陆成功.','/');
         }
         return $this->error('您还没有登陆或已经成功退出','/');
     }

@@ -38,25 +38,25 @@
     <div class="layui-form-item">
         <label class="layui-form-label">本次登陆</label>
         <div class="layui-input-block">
-            <input type="text" readonly="readonly" value="{$user.this_login_time|date='Y年m月d日 H:i',###}" class="layui-input" style="max-width: 320px;">
+            <input type="text" readonly="readonly" value="{$user.this_login_time|date='Y-m-d H:i',###}" class="layui-input" style="max-width: 320px;">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">上次登陆</label>
         <div class="layui-input-block">
-            <input type="text" readonly="readonly" value="{$user.last_login_time|date='Y年m月d日 H:i',###}" class="layui-input" style="max-width: 320px;">
+            <input type="text" readonly="readonly" value="{$user.last_login_time|date='Y-m-d H:i',###}" class="layui-input" style="max-width: 320px;">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">注册时间</label>
         <div class="layui-input-block">
-            <input type="text" readonly="readonly" value="{$user.create_time|date='Y年m月d日 H:i',###}" class="layui-input" style="max-width: 320px;">
+            <input type="text" readonly="readonly" value="{$user.create_time|date='Y-m-d H:i',###}" class="layui-input" style="max-width: 320px;">
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="updateUserData" id="updateUserData_id">更新资料</button>
-            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="bingQQ" id="bingQQ_id">QQ绑定</button>
         </div>
     </div>
 </form>

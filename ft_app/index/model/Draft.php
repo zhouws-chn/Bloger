@@ -10,4 +10,11 @@ class Draft extends Model{
     protected $createTime = false;
     protected $readonly = ['id','create_time'];
 
+    public function cate()
+    {
+        return $this->hasOne('cate','id', 'cate_id')->bind([
+            'cate_name' => 'name',
+        ]);
+    }
+
 }

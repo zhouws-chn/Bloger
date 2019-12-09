@@ -22,9 +22,11 @@
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="1">个人信息</li>
                 <li lay-id="2">草稿箱</li>
+                <li lay-id="10">评论管理</li>
                 <li lay-id="3">文章管理</li>
                 <li lay-id="4">栏目管理</li>
                 <li lay-id="5">轮播图管理</li>
+                <li lay-id="6">网站公告</li>
                 <li lay-id="9">网站管理</li>
             </ul>
             <div class="layui-tab-content">
@@ -33,6 +35,9 @@
                 </div>
                 <div class="layui-tab-item">
                     <table class="layui-hide" id="drafts_filter" lay-filter="drafts_filter"></table> <!-- 草稿箱 -->
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-hide" id="reply_filter" lay-filter="reply_filter"></table> <!-- 评论管理 -->
                 </div>
                 <div class="layui-tab-item">
                     <table class="layui-hide" id="article_list_filter" lay-filter="article_list_filter"></table>
@@ -44,40 +49,10 @@
                     <table class="layui-hide" id="carousel_filter" lay-filter="carousel_filter"></table> <!-- 轮播图管理 -->
                 </div>
                 <div class="layui-tab-item">
-                    <form class="layui-form" style="margin-top: 10px;">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">网站名称</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="name" value="{$user.name}" placeholder="请输入昵称" class="layui-input" style="max-width: 160px;">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">栏目管理</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" href="javascript:;">首页轮播图</a>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">栏目管理</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" href="javascript:;">草稿箱</a>
-                                <a class="layui-btn layui-btn-primary" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}">文章发布</a>
-                                <a class="layui-btn layui-btn-primary" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Cate/adminList')}">栏目管理</a>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">运行时间</label>
-                            <div class="layui-input-block">
-                                <input type="text" readonly="readonly" value="{$user.create_time|date='Y年m月d日 H:i',###}" class="layui-input" style="max-width: 320px;">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <button class="layui-btn" lay-submit lay-filter="" id="">修改</button>
-                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                            </div>
-                        </div>
-                    </form>
+                    <table class="layui-hide" id="notes_filter" lay-filter="notes_filter"></table> <!-- 网站公告 -->
+                </div>
+                <div class="layui-tab-item">
+                    <iframe id="iframeMain" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('admin/system_info')}" frameborder="0" border="0" scrolling="no" style="width: 100%; height: 600px; margin-top: -1%"></iframe>
                 </div>
             </div>
         </div>
@@ -111,16 +86,37 @@
     </div>
 </script>
 
+<script type="text/html" id="reply_operaTools">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reply_del">删除</a>
+</script>
+
 <script type="text/html" id="carousel_toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="carousel_add">添加轮播图</button>
     </div>
 </script>
-
+<script type="text/html" id="note_toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="note_add">发布公告</button>
+    </div>
+</script>
+<script type="text/html" id="note_operaTools">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="note_preview">预览</a>
+    <a class="layui-btn layui-btn-xs" lay-event="note_edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="note_del">删除</a>
+</script>
+<script type="text/html" id="article_toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="article_add">添加文章</button>
+    </div>
+</script>
 <script type="text/html" id="drafts_toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="drafts_add">添加草稿</button>
     </div>
+</script>
+<script type="text/html" id="switchTpl">
+    <input type="checkbox" name="status" value="{{d.id}}" lay-filter="note_sta" lay-skin="switch" lay-text="已发布|未发布" lay-filter="sexDemo" {{ d.status == 1 ? 'checked' : '' }}>
 </script>
 <!-- Footer -->
 {include file="tpl/footer" /}
@@ -175,16 +171,50 @@
             });
             return false;
         });
+/* 评论管理 */
+        table.render({
+            elem: '#reply_filter'
+            ,url:"{:url('reply/Lists')}"
+            ,title: '评论管理'
+            ,cols: [[
+                {type:'numbers', title:'序号', width:60}
+                ,{field:'content', minWidth:240, title:'内容'}
+                ,{field:'atitle', title:'所属文章标题', align:'center', width:320}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
+                ,{title:'操作', align:'center',toolbar: '#reply_operaTools',width:80}
+            ]]
+            ,page: true
+        });
+        table.on('tool(reply_filter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'reply_del'){
+                layer.confirm('确认删除此评论吗?<br />'+data['content'], function(index){
+                    var jsondata = new Object({"id":data['id']});
+                    $.post("{:url('Reply/delete')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('删除成功', {icon: 1});
+                            obj.del();
+                        }else{
+                            layer.msg('删除失败', {icon: 2});
+                            layer.close(index);
+                        }
+                    });
+                });
+            }
+        });
+/* 评论管理 -- END -- */
 /* 文章管理 */
         table.render({
             elem: '#article_list_filter'
             ,url:"{:url('User/articleLists')}"
             ,title: '文章管理表'
+            ,toolbar: '#article_toolbar'
             ,cols: [[
                 {type:'numbers', title:'序号', width:60}
                 ,{field:'title', minWidth:240, title:'标题'}
                 ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
-                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
                 ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
                 ,{title:'操作', align:'center',toolbar: '#article_operaTools',width:120}
             ]]
@@ -192,6 +222,10 @@
             ,done: function(res, curr, count){
                 tableFilterIns.reload();
             }
+
+        });
+        table.on('toolbar(article_list_filter)', function(obj){
+            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
         });
 
         table.on('tool(article_list_filter)', function(obj){
@@ -224,7 +258,7 @@
                 {type:'numbers', title:'序号', width:60}
                 ,{field:'name', minWidth:100, title:'栏目名称'}
                 ,{field:'priority', title:'优先级', align:'center', width:90}
-                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
                 ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
                 ,{title:'操作', align:'center',toolbar: '#cate_operaTools',width:200}
             ]]
@@ -296,7 +330,7 @@
                 ,{field:'name', minWidth:80, title:'轮播图名称'}
                 ,{field:'url', title:'跳转链接地址', minWidth:160,}
                 ,{field:'priority', title:'优先级', align:'center', width:90}
-                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
                 ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
                 ,{title:'操作', align:'center',toolbar: '#carousel_operaTools',width:180}
             ]]
@@ -351,6 +385,102 @@
             }
         });
 /* 轮播图管理 -- END -- */
+/* 网站公告管理 */
+        table.render({
+            elem: '#notes_filter'
+            ,url:"{:url('Notification/noteLists')}"
+            ,title: '公告管理表'
+            ,toolbar: '#note_toolbar'
+            ,cols: [[
+                {type:'numbers', title:'序号', width:60}
+                ,{field:'title', minWidth:100, title:'公告标题'}
+                ,{field:'status', title:'状态', width:104, templet: '#switchTpl', unresize: true}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+                ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
+                ,{title:'操作', align:'center',toolbar: '#note_operaTools',width:180}
+            ]]
+            ,page: true
+        });
+
+        table.on('tool(notes_filter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'note_del'){
+                layer.confirm('真的删除此公告吗?(删除后不可恢复)', function(index){
+
+                    var jsondata = new Object({"id":data['id']});
+                    $.post("{:url('Notification/delete')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('删除成功', {icon: 1});
+                            obj.del();
+                        }else{
+                            layer.msg('删除失败：'+res.info, {icon: 2});
+                        }
+                    });
+                });
+                layer.close(index);
+            } else if(obj.event === 'note_edit'){
+                layer.open({
+                    type: 2,
+                    title: '公告修改 - '+data['title'],
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['900px', '600px'],
+                    content: "{:url('Notification/edit')}"+"?id="+data["id"]
+                });
+            } else if(obj.event === 'note_preview'){
+                window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Notification/previewDraft')}?id="+data['id']);
+            }
+        });
+
+
+        table.on('toolbar(notes_filter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'note_add'){
+                layer.open({
+                    type: 2,
+                    title: '发布公告',
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['900px', '600px'],
+                    content: "{:url('Notification/add')}"
+                });
+            }
+        });
+        //监听锁定操作
+        form.on('switch(note_sta)', function(obj){
+            var msg_sta = "";
+            if(obj.elem.checked == true ){
+                msg_sta = "发布";
+            }else{
+                msg_sta = "撤回";
+            }
+
+            layer.confirm("确定"+msg_sta+"公告?", function(index){
+                var jsondata = new Object();
+                jsondata['status'] = obj.elem.checked==true?1:0;
+                jsondata['id'] = obj.value;
+                var swt = $(obj.elem);
+                swt.prop('checked',false);
+
+                $.post("{:url('Notification/changesta')}",jsondata,function(res){
+                    if(res.status) {
+                        layer.msg(msg_sta+'成功', {icon: 1});
+
+                    }else{
+                        layer.msg(msg_sta+'失败:'+res.info, {icon: 2});
+                        var swt = $(obj.elem);
+                        swt.prop('checked',!obj.elem.checked);
+                        layui.form.render();
+                    }
+                });
+            },function (index) {
+                var swt = $(obj.elem);
+                swt.prop('checked',!obj.elem.checked);
+                layui.form.render();
+            });
+
+        });
+/* 网站公告管理 -- END -- */
 /* 草稿箱 */
         table.render({
             elem: '#drafts_filter'
@@ -361,7 +491,7 @@
                 {type:'numbers', title:'序号', width:60}
                 ,{field:'title', minWidth:240, title:'标题'}
                 ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
-                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
                 ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
                 ,{title:'操作', align:'center',toolbar: '#draft_operaTools',width:240}
             ]]
@@ -420,6 +550,7 @@
             'done': function(filters){
             }
         });
+        
         function Appendzero(obj) {
             if (obj < 10) return "0" + "" + obj;
             else return obj;

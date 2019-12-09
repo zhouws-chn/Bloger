@@ -174,7 +174,23 @@ class Admin extends AdminController
     }
     /* 轮播图添加界面 */
     public function carouselAddIndex(){
-        //$this->assign('this_carousel',null);
         return $this->fetch("carousel_add_index");
+    }
+
+    public function system_info(){
+        $users = \think\Loader::model('User')::order('create_time', 'desc')->select();
+        $data['webcreatetime'] = $users[0]->create_time;
+        $usercount = \think\Loader::model('User')::order('create_time', 'desc')->count();
+        $data['usercount'] = $usercount;
+        $data['clientip'] = request()->ip();
+        $data['serverip'] = PHP_VERSION;
+        $data['PHP_VERSION'] = PHP_VERSION;
+        $data['PHP_OS'] = php_uname();
+        $data['SERVER_ADDR'] = $_SERVER['SERVER_ADDR'];
+        $data['SERVER_NAME'] = $_SERVER['SERVER_NAME'];
+        $data['server_time'] =  date("Y-m-d H:i");
+
+        $this->assign('sysdata',$data);
+        return $this->fetch("system_info");
     }
 }

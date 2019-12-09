@@ -10,14 +10,12 @@
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
     <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.css"  type="text/css">
-
 </head>
 <body class="web-body-content">
 <!-- Header -->
 {include file="tpl/header" /}
 
     <div class="layui-container" style="margin-bottom:10px;margin-top:8px;">
-
         <i class="fa fa-home"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}">首页</a> <i class="fa fa-angle-right"></i> <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/cate',array('id'=>$article['cate_id']))}">{$article.cate_name}</a> <i class="fa fa-angle-right"></i> {$article.title}
     </div>
 
@@ -53,13 +51,32 @@
         {else/}
             <span class="article_end_url">来源:<a href="{$article.origin_url}" title="{$article.origin_url}">{$article.origin_url}</a></span> <span style="float:right;">最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
         {/if}
-        </div></div>
+        </div>
+        </div>
 
-    </div>
-    <div class="layui-container admin-article-power" style="background-color: ghostwhite;margin-top: 20px;">
-        {if condition=' $Request.session.uname!=null'}
+    </div>{if condition=' $Request.session.uname!=null'}
+    <div class="layui-container admin-article-power" style="background-color: ghostwhite;margin-top: 10px;">
         <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/updateArticle',array('id'=>$article['id']))}" class="layui-btn layui-btn-xs">修改</a> <button class="layui-btn layui-btn-xs">略缩图</button> <button lay-submit lay-filter="deleteArticle" class="layui-btn layui-btn-xs">删除</button>
-        {/if}
+    </div>{/if}
+    <div class="layui-container" style="margin-top: 10px;">
+        <form class="layui-form" action="">
+        <div style="float: left;margin-right: 10px;margin-top: 12px;">{if condition=' $Request.session.uhead_img!=null'}
+            <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/{$Request.session.uhead_img}" alt="web_logo_img" style="height: 44px;margin: auto; background-color: white;">{else/}<img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/web_logo.png" alt="web_logo_img" style="height: 44px;margin: auto; background-color: white;">{/if}
+        </div>
+        <textarea name="content" required lay-verify="required" placeholder="想说点儿什么吗" class="layui-textarea" style="min-height: 74px;max-height: 110px; width: calc(100% - 54px);"></textarea>
+        <input type="hidden" name="id" value="{$article['id']}">
+        <div style="margin-top: 6px; margin-left: calc(100% - 58px);">
+            <button class="layui-btn layui-btn-xs" lay-submit lay-filter="reply">发表评论</button>
+        </div>
+        </form>{if condition=' $replies!=null '}
+        <div style="width: 100%">
+            {volist name="replies" id="reply"}
+            <div><img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/{$reply.uhead_img}" alt="web_logo_img" style="height: 28px;margin: auto; background-color: white; margin-right: 10px;"><b>{$reply.uname}</b><span style="margin-left: 20px; color: gray; font-size: 12px;">{$reply.create_time|date='Y-m-d h:m',###}</span></div>
+            <div style="margin-left: 44px; margin-top: 6px;">{$reply.content}</div>
+            <hr>
+            {/volist}
+        </div>{/if}
+
     </div>
     <!-- Footer -->
     {include file="tpl/footer" /}
@@ -107,6 +124,17 @@
             }, function(){ });
         });
         {/if}
+        form.on('submit(reply)',function(data){
+            $.post("{:url('Reply/Add')}",data.field,function(res){
+                if(res.code==1) {
+                    layer.msg(res.msg,{time:2500});
+                    setTimeout(function(){window.location.reload();},2500);
+                }else{
+                    layer.msg(res.msg,{time:2500});
+                }
+            });
+            return false;
+        });
     });
     
 

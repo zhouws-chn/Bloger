@@ -22,6 +22,7 @@
             <ul class="layui-tab-title">
                 <li class="layui-this" lay-id="1">个人信息</li>
                 <li lay-id="2">草稿箱</li>
+                <li lay-id="10">评论管理</li>
                 <li lay-id="3">文章管理</li>
                 <li lay-id="9">网站管理</li>
 
@@ -32,6 +33,9 @@
                 </div>
                 <div class="layui-tab-item">
                     <table class="layui-hide" id="drafts_filter" lay-filter="drafts_filter"></table> <!-- 草稿箱 -->
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-hide" id="reply_filter" lay-filter="reply_filter"></table> <!-- 评论管理 -->
                 </div>
                 <div class="layui-tab-item">
                     <table class="layui-hide" id="article_list_filter" lay-filter="article_list_filter"></table>
@@ -73,7 +77,15 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="draft_del">删除</a>
 </script>
 
+<script type="text/html" id="reply_operaTools">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="reply_del">删除</a>
+</script>
 
+<script type="text/html" id="article_toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="article_add">添加文章</button>
+    </div>
+</script>
 <script type="text/html" id="drafts_toolbar">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="drafts_add">添加草稿</button>
@@ -121,12 +133,12 @@
             elem: '#article_list_filter'
             ,url:"{:url('User/articleLists')}"
             ,title: '文章管理表'
-            ,filter:true
+            ,toolbar: '#article_toolbar'
             ,cols: [[
                 {type:'numbers', title:'序号', width:60}
                 ,{field:'title', minWidth:240, title:'标题'}
                 ,{field:'cate_name', title:'所属栏目', align:'center',filter:true, width:150}
-                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
                 ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
                 ,{title:'操作', align:'center',toolbar: '#article_operaTools',width:120}
             ]]
@@ -136,7 +148,9 @@
             }
         });
 
-
+        table.on('toolbar(article_list_filter)', function(obj){
+            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
+        });
         table.on('tool(article_list_filter)', function(obj){
             var data = obj.data;
             if(obj.event === 'article_del'){
@@ -167,7 +181,7 @@
                 {type:'numbers', title:'序号', width:60}
                 ,{field:'title', minWidth:240, title:'标题'}
                 ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
-                ,{field:'id', title:'Key',align:'center', width:60}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
                 ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
                 ,{title:'操作', align:'center',toolbar: '#draft_operaTools',width:240}
             ]]
@@ -219,6 +233,39 @@
             }
         });
 /* 草稿箱 -- END -- */
+/* 评论管理 */
+        table.render({
+            elem: '#reply_filter'
+            ,url:"{:url('reply/Lists')}"
+            ,title: '评论管理'
+            ,cols: [[
+                {type:'numbers', title:'序号', width:60}
+                ,{field:'content', minWidth:240, title:'内容'}
+                ,{field:'atitle', title:'所属文章标题', align:'center', width:320}
+                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
+                ,{title:'操作', align:'center',toolbar: '#reply_operaTools',width:80}
+            ]]
+            ,page: true
+        });
+        table.on('tool(reply_filter)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'reply_del'){
+                layer.confirm('确认删除此评论吗?<br />'+data['content'], function(index){
+                    var jsondata = new Object({"id":data['id']});
+                    $.post("{:url('Reply/delete')}",jsondata,function(res){
+                        if(res.status) {
+                            layer.msg('删除成功', {icon: 1});
+                            obj.del();
+                        }else{
+                            layer.msg('删除失败', {icon: 2});
+                            layer.close(index);
+                        }
+                    });
+                });
+            }
+        });
+/* 评论管理 -- END -- */
         form.on('submit(updateUserData)', function(data){
             layer.confirm('您确认修改资料吗？', {
                 btn: ['确认','取消']
