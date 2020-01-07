@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统信息</title>
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+</head>
+<body>
+<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+    <form class="layui-form" style="margin-top: 10px;">
+        <div class="layui-form-item">
+            <button href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Adminhost/index')}" class="layui-btn layui-btn-primary" style="margin-left: 300px;">文章采集(内测中....)</button>
+        </div>
+    </form>
+</div>
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    if (self == top) {
+        self.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__";
+    }
+    layui.use(['table','jquery','form'], function(){
+        var table = layui.table,
+            $ = layui.jquery,
+            form = layui.form;
+    });
+
+</script>
+</body>
+</html>

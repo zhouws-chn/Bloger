@@ -25,6 +25,21 @@ function get_pic_url_from_html($html){
     }*/
 }
 
+function pic_type_detect( $binary )
+{
+    $types = array(
+        6677    => 'bmp',
+        7173    => 'gif',
+        7368    => 'mp3',
+        13780   => 'png',
+        255216  => 'jpg',
+    );
+    $bytes = substr($binary, 0, 2);
+    $head = @unpack('C2char', $bytes);
+    $typeCode = intval($head['char1'].$head['char2']);
+    return isset($types[$typeCode]) ? $types[$typeCode] : 'null';
+}
+
 function pic_download_from_url($url, $path = 'uploads/images/')
 {
     $ch = curl_init();
@@ -34,6 +49,7 @@ function pic_download_from_url($url, $path = 'uploads/images/')
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
     $file = curl_exec($ch);
     curl_close($ch);
+
     if( $file == false ){
         return $url;
     }
@@ -44,11 +60,13 @@ function pic_download_from_url($url, $path = 'uploads/images/')
 
     $savePath = $config_view_replace_str['__STATIC__'].'/'.$path;
     if(!is_dir($savePath)){
-        mkdir($savePath);
+        mkdir($savePath,0777,true);
     }
-    if(strlen($filename)>46){
+    if(pic_type_detect($file) == 'null'){
         return $url;
     }
+    if(strlen($filename)>40)
+        $filename = substr($filename,38).'.'.pic_type_detect($file);
     $resource = fopen($savePath . $filename, 'a');
     fwrite($resource, $file);
     fclose($resource);

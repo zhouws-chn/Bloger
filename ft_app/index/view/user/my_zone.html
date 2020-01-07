@@ -25,11 +25,10 @@
                 <li lay-id="10">评论管理</li>
                 <li lay-id="3">文章管理</li>
                 <li lay-id="9">网站管理</li>
-
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                    {include file="tpl/my_zone_tab_user_data" /}
+                    {include file="user/userinfo_tab" /}
                 </div>
                 <div class="layui-tab-item">
                     <table class="layui-hide" id="drafts_filter" lay-filter="drafts_filter"></table> <!-- 草稿箱 -->
@@ -100,7 +99,10 @@
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 
 <script>
-    /* 一般直接写在一个js文件中 */
+    if(top.location != location){
+        top.location.href= location.href;
+    }
+    {/* 一般直接写在一个js文件中 */}
     layui.use(['layer', 'form','util','element','table','tableFilter'], function(){
         var layer = layui.layer
             ,$=layui.jquery
@@ -121,172 +123,16 @@
                 ,'密码必须是6到18位,且不能出现空格'
             ]
         });
-/* 文章管理 */
-        var tableFilterIns = tableFilter.render({
-            'elem' : '#article_list_filter',
-            'mode' : 'api',
-            'filters' : [{field: 'cate_name', type:'radio', url:"{:url('User/cateList')}"}, {field: 'title', type:'input'}],
-            'done': function(filters){
-            }
-        });
-        articles_table = table.render({
-            elem: '#article_list_filter'
-            ,url:"{:url('User/articleLists')}"
-            ,title: '文章管理表'
-            ,toolbar: '#article_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'title', minWidth:240, title:'标题'}
-                ,{field:'cate_name', title:'所属栏目', align:'center',filter:true, width:150}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
-                ,{title:'操作', align:'center',toolbar: '#article_operaTools',width:120}
-            ]]
-            ,page: true
-            ,done: function(res, curr, count){
-                tableFilterIns.reload();
-            }
-        });
-
-        table.on('toolbar(article_list_filter)', function(obj){
-            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
-        });
-        table.on('tool(article_list_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'article_del'){
-                layer.confirm('确认删除此文章吗?<br />'+data['title'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Article/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'article_edit'){
-                window.location.href='/index/article/updatearticle/id/'+data['id']+'.html';
-            }
-        });
-/* 文章管理 -- END -- */
-/* 草稿箱 */
-        table.render({
-            elem: '#drafts_filter'
-            ,url:"{:url('Draft/draftsLists')}"
-            ,title: '草稿箱'
-            ,toolbar: '#drafts_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'title', minWidth:240, title:'标题'}
-                ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
-                ,{title:'操作', align:'center',toolbar: '#draft_operaTools',width:240}
-            ]]
-            ,page: true
-
-        });
-        tableFilter.render({
-            'elem' : '#drafts_filter',
-            'mode' : 'local',
-            'filters' : [{field: 'cate_name', type:'checkbox'},{field: 'title', type:'input'}],
-            'done': function(filters){
-            }
-        });
-        table.on('toolbar(drafts_filter)', function(obj){
-            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
-        });
-        table.on('tool(drafts_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'draft_edit'){
-                window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/editDraft')}?id="+data['id'];
-            } else if(obj.event === 'draft_del'){
-                layer.confirm('确认删除此草稿吗?<br />'+data['title'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Draft/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'draft_push'){
-                layer.confirm('确认发布吗?<br />'+data['title'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Draft/pushArticle')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('发布成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('发布失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'draft_preview'){
-                window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/previewDraft')}?id="+data['id']);
-            }
-        });
-/* 草稿箱 -- END -- */
-/* 评论管理 */
-        table.render({
-            elem: '#reply_filter'
-            ,url:"{:url('reply/Lists')}"
-            ,title: '评论管理'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'content', minWidth:240, title:'内容'}
-                ,{field:'atitle', title:'所属文章标题', align:'center', width:320}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
-                ,{title:'操作', align:'center',toolbar: '#reply_operaTools',width:80}
-            ]]
-            ,page: true
-        });
-        table.on('tool(reply_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'reply_del'){
-                layer.confirm('确认删除此评论吗?<br />'+data['content'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Reply/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            }
-        });
-/* 评论管理 -- END -- */
-        form.on('submit(updateUserData)', function(data){
-            layer.confirm('您确认修改资料吗？', {
-                btn: ['确认','取消']
-            }, function(){
-
-                layer.close();
-                var jsondata = data.field;
-                $.post("{:url('User/updateUserData')}",jsondata,function(res){
-                    if(res.status) {
-                        layer.msg(res.info,{time:2500});
-                        setTimeout(function(){window.location.reload();},2400);
-                    }else{
-                        layer.msg(res.info,{time:2500});
-                    }
-                });
-            }, function(){
-                layer.msg('已取消', {icon: 0});
-            });
-            return false;
-        });
-
+        {include file="user/userinfo_tabjs" /}
+{/* 文章管理 */}
+        {include file="user/articlemanage_tabjs" /}
+{/* 文章管理 -- END -- */}
+{/* 草稿箱 */}
+        {include file="user/draftmanage_tabjs" /}
+{/* 草稿箱 -- END -- */}
+{/* 评论管理 */}
+        {include file="user/replymanage_tabjs" /}
+{/* 评论管理 -- END -- */}
         form.on('submit(verifyAdmin)', function(data){
             var jsondata = data.field;
             $.post("{:url('User/verifyAdmin')}",jsondata,function(res){

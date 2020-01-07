@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>table模块快速使用</title>
+    <title>系统信息</title>
     <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
 </head>
 <body>
@@ -27,9 +27,9 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: 100px;">服务器IP</label>
+            <label class="layui-form-label" style="width: 100px;">服务器地址</label>
             <div class="layui-inline" style="width: 320px">
-                <input type="text" readonly="readonly" value="{$sysdata.SERVER_NAME} ({$sysdata.SERVER_ADDR})" class="layui-input" >
+                <input type="text" readonly="readonly" value="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__" class="layui-input" >
             </div>
         </div>
         <div class="layui-form-item">
@@ -47,14 +47,17 @@
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: 100px;">服务器时间</label>
             <div class="layui-inline">
-                <input type="text" readonly="readonly" value="{$sysdata.server_time}" class="layui-input">
+                <input type="text" readonly="readonly" value="{$sysdata.server_time|date='Y-m-d H:i',###}" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: 100px;">运行时间</label>
+            <label class="layui-form-label" style="width: 100px;">已运行时间</label>
             <div class="layui-inline">
-                <input type="text" readonly="readonly" value="{$sysdata.webcreatetime|date='Y-m-d H:i',###}" class="layui-input" >
+                <input type="text" value="" class="layui-input" id="runtime">
             </div>
+        </div>
+        <div class="layui-form-item">
+            <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Admin/Logout')}" class="layui-btn layui-btn-primary" style="margin-left: 300px;">注销登陆</a>
         </div>
     </form>
 </div>
@@ -66,11 +69,26 @@
 <![endif]-->
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 <script>
+    if (self == top) {
+        self.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__";
+    }
     layui.use(['table','jquery','form'], function(){
         var table = layui.table,
             $ = layui.jquery,
             form = layui.form;
+
+        $("#runtime").attr("value",getDateStr({$sysdata.webcreatetime}));
+        $("#runtime").attr("readonly","readonly");
     });
+    function getDateStr(seconds){
+        var day = parseInt(seconds/86400);
+        seconds = seconds%86400;
+        var hour = parseInt(seconds/3600);
+        seconds = seconds%3600;
+        var minute = parseInt(seconds/60);
+        var currentTime =  day + " 天 " + hour + " 时 "+minute+" 分";
+        return currentTime
+    }
 </script>
 </body>
 </html>

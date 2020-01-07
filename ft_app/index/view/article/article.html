@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
     <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
     <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
-    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.css"  type="text/css">
+    <link  rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/ui/oxide/content.min.css" type="text/css">
 </head>
 <body class="web-body-content">
 <!-- Header -->
@@ -40,14 +40,14 @@
             </div>
 
         </div>{if condition=' $article.abstract_is!=0'}
-        <div style="margin-top: 20px;">
-            <span style="color: red;">摘要:</span>{$article.abstract}
+        <div style="margin-top: 20px; padding-left: 16px; padding-right: 16px;">
+            <span style="color: red;">摘要:</span>{$article.abstract}<hr>
         </div>{/if}
 
-        <div class="article_content">{$article.content}
+        <div class="article_content" id="article_content_id">{$article.content}
         <hr>
         <div class="article_source">{if condition=' strlen($article.origin_url)<4'}
-        <span class="article_end_url">来源: <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}">__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}</a></span> <span style="float:right;">最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
+        <span class="article_end_url">来源: <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}" title="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}">__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/detial',array('id'=>$article['id']))}</a></span> <span style="float:right;">最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
         {else/}
             <span class="article_end_url">来源:<a href="{$article.origin_url}" title="{$article.origin_url}">{$article.origin_url}</a></span> <span style="float:right;">最后更新于: {$article.update_time|date='Y-m-d H:i',###}</span>
         {/if}
@@ -56,9 +56,9 @@
 
     </div>{if condition=' $Request.session.uname!=null'}
     <div class="layui-container admin-article-power" style="background-color: ghostwhite;margin-top: 10px;">
-        <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('article/updateArticle',array('id'=>$article['id']))}" class="layui-btn layui-btn-xs">修改</a> <button class="layui-btn layui-btn-xs">略缩图</button> <button lay-submit lay-filter="deleteArticle" class="layui-btn layui-btn-xs">删除</button>
+        <a href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('uarticle/updateArticle',array('id'=>$article['id']))}" class="layui-btn layui-btn-xs">修改</a> <button class="layui-btn layui-btn-xs">略缩图</button> <button lay-submit lay-filter="deleteArticle" class="layui-btn layui-btn-xs">删除</button>
     </div>{/if}
-    <div class="layui-container" style="margin-top: 10px;">
+    <div class="layui-container" style="margin-top: 10px; margin-bottom: 20px;">
         <form class="layui-form" action="">
         <div style="float: left;margin-right: 10px;margin-top: 12px;">{if condition=' $Request.session.uhead_img!=null'}
             <img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/{$Request.session.uhead_img}" alt="web_logo_img" style="height: 44px;margin: auto; background-color: white;">{else/}<img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/web_logo.png" alt="web_logo_img" style="height: 44px;margin: auto; background-color: white;">{/if}
@@ -111,7 +111,7 @@
                 btn: ['删除','取消']
             }, function(){
                 var jsondata = new Object({"id":"{$article.id}"});
-                $.post("{:url('Article/delete')}",jsondata,function(res){
+                $.post("{:url('Uarticle/delete')}",jsondata,function(res){
                     if(res.status) {
                         layer.msg('删除成功', {icon: 1});
                         setTimeout(function(){window.location.href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('index/index')}";},2500);

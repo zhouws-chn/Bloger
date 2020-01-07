@@ -1,9 +1,10 @@
 <form class="layui-form" style="margin-top: 10px;">
     <div class="layui-form-item">
         <label class="layui-form-label">用户昵称</label>
-        <div class="layui-input-block">
-            <input type="text" name="name" value="{$user.name}" placeholder="请输入昵称" class="layui-input" style="max-width: 160px;">
+        <div class="layui-input-inline">
+            <input type="text" name="name" value="{$user.name}" placeholder="请输入昵称" class="layui-input" style="max-width: 200px;">
         </div>
+        {if condition=' $user.head_img!=null'}<img src="{$user.head_img}" height="38px">{else/}<img src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/web_logo.png" height="38px">{/if}
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">电子邮箱</label>
@@ -56,7 +57,7 @@
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="updateUserData" id="updateUserData_id">更新资料</button>
-            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="bingQQ" id="bingQQ_id">QQ绑定</button>
+            <button class="layui-btn layui-btn-primary" lay-submit lay-filter="bingQQ" id="bingQQ_id">{if condition='$user.qqopenid!=null'}解除绑定{else/}QQ绑定{/if}</button>
         </div>
     </div>
 </form>

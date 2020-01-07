@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>新建笔记 - __WEB_NAME__ - __WEB_URL_HOSTNAME__</title>
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
+</head>
+<body class="web-body-content">
+
+<div class="layui-container article_detial" style="background-color: #fffFFF;padding-top: 10px; width: 750px;">
+
+    <form class="layui-form" >
+        <input type="text" name="title" id="title_id" lay-verify="title" autocomplete="off" placeholder="请输入标题" value="Untitled" class="layui-input">
+        <textarea placeholder="请输入内容" name="article_content" id="article_container" style="height: 100vh"></textarea>
+    </form>
+</div>
+<!-- Footer -->
+<!-- 你的HTML代码 END -->
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/tinymce.min.js"></script>
+
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    /* 一般直接写在一个js文件中 */
+    var auto_save_time = 150;
+    var tinymce_content = '';
+    var notepad_id = 0;
+    layui.use(['layer', 'form','element','util','jquery'], function(){
+        var layer = layui.layer
+            ,$=layui.jquery
+            ,form = layui.form
+            ,element = layui.element
+            ,util = layui.util;
+
+        {include file="tpl/tinymce_editjs" /}
+        /* 执行 */
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+        function tinyMCE_then( ) {
+
+        }
+        
+        function tinyMCE_save() {
+            auto_save_time = 150;
+            if(tinymce_content == tinymce.activeEditor.getContent() ){
+                return ;
+            }
+            tinymce_content= tinymce.activeEditor.getContent();
+            var jsondata = new Object();
+            //var options = document.getElementById("cate_id").options;
+            //jsondata.cate_name = options[jsondata.cate_name].text;
+            jsondata.id = notepad_id;
+            jsondata.title = document.getElementById("title_id").value;
+            if( notepad_id==0 ){
+                jsondata.title = jsondata.title + "-" + getNewTitleIndex();
+                $("#title_id").attr("value",jsondata.title);
+            }
+
+            jsondata.content = tinymce.activeEditor.getContent();
+            $.post("{:url('Editor/save')}",jsondata,function(res){
+                if(res.status) {
+                    notepad_id = res.id;
+                    layer.msg(res.info,{time:2500});
+                }else{
+                    layer.msg(res.info,{time:2500});
+                }
+            });
+        }
+        function auto_tinyMCE_save() {
+            //console.log('auto_tinyMCE_save');
+            //console.log(auto_save_time);
+            if(auto_save_time!=0){
+                auto_save_time = auto_save_time-1;
+            }else{
+                tinyMCE_save();
+            }
+        }
+        var intervalId = window.setInterval(auto_tinyMCE_save, 1000);
+    });
+    document.onkeydown = editorKeyDown;
+
+
+    function editorKeyDown(e)
+    {
+        var num = e.which?e.which:e.keyCode;
+        if( e.ctrlKey && num == 83 )
+        {
+            console.log('keydown');
+        }
+    }
+    function Appendzero(obj) {
+        if (obj < 10) return "0" + "" + obj;
+        else return obj;
+    }
+    function getNewTitleIndex() {
+        var now = new Date();
+        var year =now.getFullYear();
+        var month =Appendzero(now.getMonth()+1);
+        var date=Appendzero(now.getDate());
+        var hours=Appendzero(now.getHours());
+        var minutes=Appendzero(now.getMinutes());
+        var seconds=Appendzero(now.getSeconds());
+        return year+month+date+hours+minutes+seconds;
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{/* <script> */}
+table.render({
+    elem: '#cate_list_filter'
+    ,url:"{:url('Admin/cateLists')}"
+    ,title: '栏目管理表'
+    ,toolbar: '#cate_toolbar'
+    ,cols: [[
+        {type:'numbers', title:'序号', width:60}
+        ,{field:'name', minWidth:100, title:'栏目名称'}
+        ,{field:'priority', title:'优先级', align:'center', width:90}
+        ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+        ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
+        ,{title:'操作', align:'center',toolbar: '#cate_operaTools',width:200}
+    ]]
+    ,page: true
+});
+
+table.on('tool(cate_list_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'cate_del'){
+        layer.confirm('真的删除此栏目吗?(删除后不可恢复)', function(index){
+            layer.prompt({title: '请输入密码:', formType: 1, maxlength:18}, function(pass, index){
+                layer.close(index);
+                var jsondata = new Object({"id":data['id']});
+                jsondata['passwd'] = pass;
+                $.post("{:url('Cate/delete')}",jsondata,function(res){
+                    if(res.status) {
+                        layer.msg('删除成功', {icon: 1});
+                        obj.del();
+                    }else{
+                        layer.msg('删除失败：'+res.info, {icon: 2});
+                    }
+                });
+            });
+            layer.close(index);
+        });
+    } else if(obj.event === 'cate_edit'){
+        layer.open({
+            type: 2,
+            title: '栏目修改 - '+data['name'],
+            shadeClose: true,
+            shade: 0.8,
+            area: ['480px', '240px'],
+            content: "{:url('admin/updateCate')}"+"?id="+data["id"]
+        });
+    } else if(obj.event === 'cate_img'){
+        layer.open({
+            type: 2,
+            title: '编辑栏目 - '+data['name'],
+            shadeClose: true,
+            shade: 0.8,
+            area: ['480px', '400px'],
+            content: [ '/index/admin/getUploadImgs/id/'+data['id']]
+        });
+    }
+});
+
+table.on('toolbar(cate_list_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'cate_add'){
+        layer.open({
+            type: 2,
+            title: '新增栏目',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['480px', '240px'],
+            content: "{:url('admin/updateCate')}"
+        });
+    }
+});
+{/* </script> */}

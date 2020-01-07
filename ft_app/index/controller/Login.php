@@ -98,9 +98,34 @@ class Login extends BaseController
         }
         if(Session::has('uname'))
         {
+            if(Session::has('bingqq_time')){
+                if((time() - Session::get('bingqq_time'))<60*3){
+                    $qc = new QC();
+                    $access_token = $qc->qq_callback();    // access_token
+                    $openid = $qc->get_openid();     // openid
+                    $qc = new QC($access_token,$openid);
+                    $qqUserInfo = $qc->get_user_info();
+                    if (empty($openid) || empty($access_token) || count($qqUserInfo) <= 0) {
+                        echo "获取用户信息异常,请重新尝试";
+                        die;
+                    }
+                    $user = \app\index\model\User::get(Session::get('uid'));
+
+                    $user->qqopenid = $openid;
+                    $user->head_img = pic_download_from_url($qqUserInfo['figureurl_qq_2'],'users/images/');
+                    $res = $user->save();
+                    if($res){
+                        Session::delete('bingqq_time');
+                        return $this->success('绑定成功','/index/index');
+                    }else{
+                        return $this->error('绑定失败');
+                    }
+                }
+            }
             // 已经登陆 直接返回到首页
-            return $this->error('已经登陆过了,不需要再次登陆');
+            return $this->error('已经登陆过了,不需要再次登陆','/index/index');
         }
+
         $qc = new QC();
         $access_token = $qc->qq_callback();    // access_token
         $openid = $qc->get_openid();     // openid
@@ -121,15 +146,5 @@ class Login extends BaseController
         return json($data);
 
     }
-    // 请求退出
-    public function Logout()
-    {
-        if(Session::has('uname'))
-        {
-            $user = new User();
-            $user->LogoutSetSession();
-            return $this->success('注销登陆成功.','/');
-        }
-        return $this->error('您还没有登陆或已经成功退出','/');
-    }
+
 }

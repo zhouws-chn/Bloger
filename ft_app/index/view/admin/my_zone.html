@@ -31,7 +31,7 @@
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                    {include file="tpl/my_zone_tab_user_data" /}
+                    {include file="user/userinfo_tab" /}
                 </div>
                 <div class="layui-tab-item">
                     <table class="layui-hide" id="drafts_filter" lay-filter="drafts_filter"></table> <!-- 草稿箱 -->
@@ -52,7 +52,8 @@
                     <table class="layui-hide" id="notes_filter" lay-filter="notes_filter"></table> <!-- 网站公告 -->
                 </div>
                 <div class="layui-tab-item">
-                    <iframe id="iframeMain" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('admin/system_info')}" frameborder="0" border="0" scrolling="no" style="width: 100%; height: 600px; margin-top: -1%"></iframe>
+                    <iframe id="iframeMain" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('admin/system_info')}" frameborder="0" border="0" scrolling="no" style="width: 100%; height: 520px; margin-top: -1%"></iframe>
+                    <iframe id="iframeMain2" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('adminhost/collect')}" frameborder="0" border="0" scrolling="no" style="width: 100%; height: 60px; margin-top: -1%"></iframe>
                 </div>
             </div>
         </div>
@@ -130,7 +131,10 @@
 <script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
 
 <script>
-    /* 一般直接写在一个js文件中 */
+    if(top.location != location){
+        top.location.href= location.href;
+    }
+    {/* 一般直接写在一个js文件中 */}
     layui.use(['layer', 'form','util','element','table','tableFilter'], function(){
         var layer = layui.layer
             ,$=layui.jquery
@@ -151,405 +155,28 @@
                 ,'密码必须是6到18位,且不能出现空格'
             ]
         });
-
-        form.on('submit(updateUserData)', function(data){
-            layer.confirm('您确认修改资料吗？', {
-                btn: ['确认','取消']
-            }, function(){
-                layer.close();
-                var jsondata = data.field;
-                $.post("{:url('User/updateUserData')}",jsondata,function(res){
-                    if(res.status) {
-                        layer.msg(res.info,{time:2500});
-                        setTimeout(function(){window.location.reload();},2400);
-                    }else{
-                        layer.msg(res.info,{time:2500});
-                    }
-                });
-            }, function(){
-                layer.msg('已取消', {icon: 0});
-            });
-            return false;
-        });
-/* 评论管理 */
-        table.render({
-            elem: '#reply_filter'
-            ,url:"{:url('reply/Lists')}"
-            ,title: '评论管理'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'content', minWidth:240, title:'内容'}
-                ,{field:'atitle', title:'所属文章标题', align:'center', width:320}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
-                ,{title:'操作', align:'center',toolbar: '#reply_operaTools',width:80}
-            ]]
-            ,page: true
-        });
-        table.on('tool(reply_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'reply_del'){
-                layer.confirm('确认删除此评论吗?<br />'+data['content'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Reply/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            }
-        });
-/* 评论管理 -- END -- */
-/* 文章管理 */
-        table.render({
-            elem: '#article_list_filter'
-            ,url:"{:url('User/articleLists')}"
-            ,title: '文章管理表'
-            ,toolbar: '#article_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'title', minWidth:240, title:'标题'}
-                ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
-                ,{title:'操作', align:'center',toolbar: '#article_operaTools',width:120}
-            ]]
-            ,page: true
-            ,done: function(res, curr, count){
-                tableFilterIns.reload();
-            }
-
-        });
-        table.on('toolbar(article_list_filter)', function(obj){
-            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
-        });
-
-        table.on('tool(article_list_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'article_del'){
-                layer.confirm('确认删除此文章吗?<br />'+data['title'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Article/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'article_edit'){
-                window.location.href='/index/article/updatearticle/id/'+data['id']+'.html';
-            }
-        });
-/* 文章管理 -- END -- */
-/* 栏目管理 */
-        table.render({
-            elem: '#cate_list_filter'
-            ,url:"{:url('Admin/cateLists')}"
-            ,title: '栏目管理表'
-            ,toolbar: '#cate_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'name', minWidth:100, title:'栏目名称'}
-                ,{field:'priority', title:'优先级', align:'center', width:90}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
-                ,{title:'操作', align:'center',toolbar: '#cate_operaTools',width:200}
-            ]]
-            ,page: true
-        });
-
-        table.on('tool(cate_list_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'cate_del'){
-                layer.confirm('真的删除此栏目吗?(删除后不可恢复)', function(index){
-                    layer.prompt({title: '请输入密码:', formType: 1, maxlength:18}, function(pass, index){
-                        layer.close(index);
-                        var jsondata = new Object({"id":data['id']});
-                        jsondata['passwd'] = pass;
-                        $.post("{:url('Cate/delete')}",jsondata,function(res){
-                            if(res.status) {
-                                layer.msg('删除成功', {icon: 1});
-                                obj.del();
-                            }else{
-                                layer.msg('删除失败：'+res.info, {icon: 2});
-                            }
-                        });
-                    });
-                    layer.close(index);
-                });
-            } else if(obj.event === 'cate_edit'){
-                layer.open({
-                    type: 2,
-                    title: '栏目修改 - '+data['name'],
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['480px', '240px'],
-                    content: "{:url('admin/updateCate')}"+"?id="+data["id"]
-                });
-            } else if(obj.event === 'cate_img'){
-                layer.open({
-                    type: 2,
-                    title: '编辑栏目 - '+data['name'],
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['480px', '400px'],
-                    content: [ '/index/admin/getUploadImgs/id/'+data['id']]
-                });
-            }
-        });
-
-        table.on('toolbar(cate_list_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'cate_add'){
-                layer.open({
-                    type: 2,
-                    title: '新增栏目',
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['480px', '240px'],
-                    content: "{:url('admin/updateCate')}"
-                });
-            }
-        });
-/* 栏目管理 -- END -- */
-/* 轮播图管理 */
-        table.render({
-            elem: '#carousel_filter'
-            ,url:"{:url('Admin/carouselLists')}"
-            ,title: '轮播图管理'
-            ,toolbar: '#carousel_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'name', minWidth:80, title:'轮播图名称'}
-                ,{field:'url', title:'跳转链接地址', minWidth:160,}
-                ,{field:'priority', title:'优先级', align:'center', width:90}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
-                ,{title:'操作', align:'center',toolbar: '#carousel_operaTools',width:180}
-            ]]
-            ,page: true
-        });
-        table.on('toolbar(carousel_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'carousel_add'){
-                layer.open({
-                    type: 2,
-                    title: '添加轮播图',
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['480px', '400px'],
-                    content: [ "{:url('admin/carouselAddIndex')}"]
-                });
-            }
-        });
-        table.on('tool(carousel_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'carousel_del'){
-                layer.confirm('确认删除此轮播图吗?<br />'+data['name'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Carousel/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'carousel_edit'){
-                layer.open({
-                    type: 2,
-                    title: '修改轮播图 - '+data['name'],
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['480px', '400px'],
-                    content: [ "{:url('Carousel/edit')}?id="+data['id']]
-                });
-            } else if(obj.event === 'carousel_img'){
-                layer.open({
-                    type: 2,
-                    title: '修改轮播图 - '+data['name'],
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['480px', '400px'],
-                    content: [ "{:url('Carousel/editImage')}?id="+data['id']]
-                });
-            }
-        });
-/* 轮播图管理 -- END -- */
-/* 网站公告管理 */
-        table.render({
-            elem: '#notes_filter'
-            ,url:"{:url('Notification/noteLists')}"
-            ,title: '公告管理表'
-            ,toolbar: '#note_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'title', minWidth:100, title:'公告标题'}
-                ,{field:'status', title:'状态', width:104, templet: '#switchTpl', unresize: true}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
-                ,{title:'操作', align:'center',toolbar: '#note_operaTools',width:180}
-            ]]
-            ,page: true
-        });
-
-        table.on('tool(notes_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'note_del'){
-                layer.confirm('真的删除此公告吗?(删除后不可恢复)', function(index){
-
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Notification/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败：'+res.info, {icon: 2});
-                        }
-                    });
-                });
-                layer.close(index);
-            } else if(obj.event === 'note_edit'){
-                layer.open({
-                    type: 2,
-                    title: '公告修改 - '+data['title'],
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['900px', '600px'],
-                    content: "{:url('Notification/edit')}"+"?id="+data["id"]
-                });
-            } else if(obj.event === 'note_preview'){
-                window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Notification/previewDraft')}?id="+data['id']);
-            }
-        });
-
-
-        table.on('toolbar(notes_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'note_add'){
-                layer.open({
-                    type: 2,
-                    title: '发布公告',
-                    shadeClose: true,
-                    shade: 0.8,
-                    area: ['900px', '600px'],
-                    content: "{:url('Notification/add')}"
-                });
-            }
-        });
-        //监听锁定操作
-        form.on('switch(note_sta)', function(obj){
-            var msg_sta = "";
-            if(obj.elem.checked == true ){
-                msg_sta = "发布";
-            }else{
-                msg_sta = "撤回";
-            }
-
-            layer.confirm("确定"+msg_sta+"公告?", function(index){
-                var jsondata = new Object();
-                jsondata['status'] = obj.elem.checked==true?1:0;
-                jsondata['id'] = obj.value;
-                var swt = $(obj.elem);
-                swt.prop('checked',false);
-
-                $.post("{:url('Notification/changesta')}",jsondata,function(res){
-                    if(res.status) {
-                        layer.msg(msg_sta+'成功', {icon: 1});
-
-                    }else{
-                        layer.msg(msg_sta+'失败:'+res.info, {icon: 2});
-                        var swt = $(obj.elem);
-                        swt.prop('checked',!obj.elem.checked);
-                        layui.form.render();
-                    }
-                });
-            },function (index) {
-                var swt = $(obj.elem);
-                swt.prop('checked',!obj.elem.checked);
-                layui.form.render();
-            });
-
-        });
-/* 网站公告管理 -- END -- */
-/* 草稿箱 */
-        table.render({
-            elem: '#drafts_filter'
-            ,url:"{:url('Draft/draftsLists')}"
-            ,title: '草稿箱'
-            ,toolbar: '#drafts_toolbar'
-            ,cols: [[
-                {type:'numbers', title:'序号', width:60}
-                ,{field:'title', minWidth:240, title:'标题'}
-                ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
-                ,{field:'id', title:'Key',align:'center', width:60, hide: true}
-                ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
-                ,{title:'操作', align:'center',toolbar: '#draft_operaTools',width:240}
-            ]]
-            ,page: true
-        });
-        tableFilter.render({
-            'elem' : '#drafts_filter',
-            'mode' : 'local',
-            'filters' : [{field: 'cate_name', type:'checkbox'},{field: 'title', type:'input'}]
-        });
-        table.on('toolbar(drafts_filter)', function(obj){
-            window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Article/editArticle')}";
-        });
-        table.on('tool(drafts_filter)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'draft_edit'){
-                window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/editDraft')}?id="+data['id'];
-            } else if(obj.event === 'draft_del'){
-                layer.confirm('确认删除此草稿吗?<br />'+data['title'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Draft/delete')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('删除成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('删除失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'draft_push'){
-                layer.confirm('确认发布吗?<br />'+data['title'], function(index){
-                    var jsondata = new Object({"id":data['id']});
-                    $.post("{:url('Draft/pushArticle')}",jsondata,function(res){
-                        if(res.status) {
-                            layer.msg('发布成功', {icon: 1});
-                            obj.del();
-                        }else{
-                            layer.msg('发布失败', {icon: 2});
-                            layer.close(index);
-                        }
-                    });
-                });
-            } else if(obj.event === 'draft_preview'){
-                window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/previewDraft')}?id="+data['id']);
-            }
-        });
-/* 草稿箱 -- END -- */
-
+        {include file="user/userinfo_tabjs" /}
+{/* 评论管理 */}
+        {include file="user/replymanage_tabjs" /}
+{/* 评论管理 -- END -- */}
+{/* 文章管理 */}
+        {include file="user/articlemanage_tabjs" /}
+{/* 文章管理 -- END -- */}
+{/* 栏目管理 */}
+        {include file="admin/catemanage_tabjs" /}
+{/* 栏目管理 -- END -- */}
+{/* 轮播图管理 */}
+        {include file="admin/carouselmanage_tabjs" /}
+{/* 轮播图管理 -- END -- */}
+{/* 网站公告管理 */}
+        {include file="admin/notificationmanage_tabjs" /}
+{/* 网站公告管理 -- END -- */}
+{/* 草稿箱 */}
+        {include file="user/draftmanage_tabjs" /}
+{/* 草稿箱 -- END -- */}
         element.tabChange('user_tab', {$tab});
         /* 文章管理 */
-        var tableFilterIns = tableFilter.render({
-            'elem' : '#article_list_filter',
-            'mode' : 'api',
-            'filters' : [{field: 'cate_name', type:'radio', url:"{:url('User/cateList')}"}, {field: 'title', type:'input'}],
-            'done': function(filters){
-            }
-        });
+
         
         function Appendzero(obj) {
             if (obj < 10) return "0" + "" + obj;

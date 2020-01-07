@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>jsMind</title>
+    <link type="text/css" rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/jsmind/style/jsmind.css" />
+    <style type="text/css">
+        li{margin-top:2px; margin-bottom:2px;}
+        button{width:140px;}
+        select{width:140px;}
+        #layout{width:1230px;}
+        #jsmind_nav{width:210px;height:600px;border:solid 1px #ccc;overflow:auto;float:left;}
+        .file_input{width:100px;}
+        button.sub{width:100px;}
+
+        #jsmind_container{
+            float:left;
+            width:1000px;
+            height:600px;
+            border:solid 1px #ccc;
+            background:#f4f4f4;
+        }
+    </style>
+</head>
+<body>
+<div style="width: 100%;"><label>标题:</label><input name="title" id="title_id" value="title" style="width: 30%"></div>
+<div id="layout" style="margin-top: 10px;">
+    <div id="jsmind_nav" style="height: calc(100vh - 70px);">
+        </ol>
+        <div>编辑节点</div>
+        <ol type='A'>
+            <li><button onclick="toggle_editable(this);">disable editable</button></li>
+            <li><button onclick="add_node();">添加节点</button></li>
+            <li><button onclick="add_image_node();">添加图片节点</button></li>
+            <li><button onclick="modify_node();">修改节点</button></li>
+            <li><button onclick="move_node();">move a node</button></li>
+            <li><button onclick="move_to_first();">move to first</button></li>
+            <li><button onclick="move_to_last();">move to last</button></li>
+            <li><button onclick="remove_node();">remove node</button></li>
+        </ol>
+        <div>节点风格</div>
+        <ol type='A'>
+            <li><button onclick="change_text_font();">change font</button></li>
+            <li><button onclick="change_text_color();">change color</button></li>
+            <li><button onclick="change_background_color();">change bg-color</button></li>
+            <li><button onclick="change_background_image();">change background</button></li>
+        </ol>
+        <div>主题样式</div>
+        <ol type='A'>
+            <li>
+                <select onchange="set_theme(this.value);">
+                    <option value="">default</option>
+                    <option value="primary">primary</option>
+                    <option value="warning">warning</option>
+                    <option value="danger">danger</option>
+                    <option value="success">success</option>
+                    <option value="info">info</option>
+                    <option value="greensea" selected="selected">greensea</option>
+                    <option value="nephrite">nephrite</option>
+                    <option value="belizehole">belizehole</option>
+                    <option value="wisteria">wisteria</option>
+                    <option value="asphalt">asphalt</option>
+                    <option value="orange">orange</option>
+                    <option value="pumpkin">pumpkin</option>
+                    <option value="pomegranate">pomegranate</option>
+                    <option value="clouds">clouds</option>
+                    <option value="asbestos">asbestos</option>
+                </select>
+            </li>
+        </ol>
+        <div>Adjusting</div>
+        <ol type='A'>
+            <li>expand/collapse</li>
+            <ol>
+                <li><button class="sub" onclick="expand();">expand node</button></li>
+                <li><button class="sub" onclick="collapse();">collapse node</button></li>
+                <li><button class="sub" onclick="expand_all();">expand all</button></li>
+                <li><button class="sub" onclick="collapse_all();">collapse all</button></li>
+            </ol>
+            <li>zoom</li>
+
+            <button id="zoom-in-button" style="width:50px" onclick="zoomIn();">
+                In
+            </button>
+            <button id="zoom-out-button" style="width:50px" onclick="zoomOut();">
+                Out
+            </button>
+        </ol>
+
+        <div>保存文件</div>
+        <ol type='A'>
+            <li><button class="sub" onclick="save_mind_post();">save file</button></li>
+        </ol>
+    </div>
+    <div id="jsmind_container" style="height: calc(100vh - 70px);width: calc(100vw - 230px); position: absolute; margin-left: 215px;"></div>
+    <div style="display:none">
+        <input class="file" type="file" id="image-chooser" accept="image/*"/>
+    </div>
+
+</div>
+<script type="text/javascript" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/jsmind/js/jsmind.js"></script>
+<script type="text/javascript" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/jsmind/js/jsmind.draggable.js"></script>
+<script type="text/javascript" src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/jsmind/js/jsmind.screenshot.js"></script>
+<script type="text/javascript">
+    var mind_id = 0;
+    var _jm = null;
+    function open_empty(){
+        var options = {
+            container:'jsmind_container',
+            theme:'greensea',
+            editable:true
+        }
+        _jm = jsMind.show(options);
+    }
+
+    function open_ajax(){
+        var mind_url = 'data_example.json';
+        jsMind.util.ajax.get(mind_url,function(mind){
+            _jm.show(mind);
+        });
+    }
+
+    function save_mind_post(){
+        var mind_url = '__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('notepad/mind/save')}';
+        var json_data = new Object();
+        var mind_data = _jm.get_data();
+        var title=  document.getElementById("title_id").value;
+        json_data.id = mind_id;
+        json_data.title = title;
+        json_data.content =jsMind.util.json.json2string(mind_data);
+        jsMind.util.ajax.post(mind_url,json_data,function(mind){
+            if(mind.status){
+                prompt_info('保存成功')
+            }else{
+                prompt_info('保存失败')
+            }
+
+        });
+    }
+
+    function get_mind_json(){
+        var mind_url = '__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('notepad/mind/update')}';
+        var json_data = new Object();
+        json_data.id = getQueryVariable('id');
+        jsMind.util.ajax.post(mind_url,json_data,function(res){
+            if(res.status){
+                var mind = jsMind.util.json.string2json(res.content);
+                if(!!mind){
+                    mind_id = res.id;
+                    document.getElementById("title_id").value=res.title;
+                    _jm.show(mind);
+                }else{
+                    prompt_info('can not open this file as mindmap');
+                }
+            }else{
+                prompt_info('保存失败')
+            }
+
+        });
+
+    }
+
+    function get_selected_nodeid(){
+        var selected_node = _jm.get_selected_node();
+        if(!!selected_node){
+            return selected_node.id;
+        }else{
+            return null;
+        }
+    }
+
+    function add_node(){
+        var selected_node = _jm.get_selected_node(); // as parent of new node
+        if(!selected_node){prompt_info('please select a node first.');return;}
+
+        var nodeid = jsMind.util.uuid.newid();
+        var topic = '* Node_'+nodeid.substr(nodeid.length-6)+' *';
+        var node = _jm.add_node(selected_node, nodeid, topic);
+    }
+
+    var imageChooser = document.getElementById('image-chooser');
+
+    imageChooser.addEventListener('change', function (event) {
+        // Read file here.
+        var reader = new FileReader();
+        reader.onloadend = (function () {
+            var selected_node = _jm.get_selected_node();
+            var nodeid = jsMind.util.uuid.newid();
+            var topic = undefined;
+            var data = {
+                "background-image": reader.result,
+                "width": "100",
+                "height": "100"};
+            var node = _jm.add_node(selected_node, nodeid, topic, data);
+            //var node = _jm.add_image_node(selected_node, nodeid, reader.result, 100, 100);
+            //add_image_node:function(parent_node, nodeid, image, width, height, data, idx, direction, expanded){
+        });
+
+        var file = imageChooser.files[0];
+        if (file) {
+            reader.readAsDataURL(file);
+        };
+
+    }, false);
+
+    function add_image_node(){
+        var selected_node = _jm.get_selected_node(); // as parent of new node
+        if(!selected_node){
+            prompt_info('please select a node first.');
+            return;
+        }
+
+        imageChooser.focus();
+        imageChooser.click();
+    }
+
+    function modify_node(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        // modify the topic
+        _jm.update_node(selected_id, '--- modified ---');
+    }
+
+    function move_to_first(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.move_node(selected_id,'_first_');
+    }
+
+    function move_to_last(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.move_node(selected_id,'_last_');
+    }
+
+    function move_node(){
+        // move a node before another
+        _jm.move_node('other','open');
+    }
+
+    function remove_node(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.remove_node(selected_id);
+    }
+
+    function change_text_font(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.set_node_font_style(selected_id, 28);
+    }
+
+    function change_text_color(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.set_node_color(selected_id, null, '#000');
+    }
+
+    function change_background_color(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.set_node_color(selected_id, '#eee', null);
+    }
+
+    function change_background_image(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.set_node_background_image(selected_id, 'ant.png', 100, 100);
+    }
+
+    function set_theme(theme_name){
+        _jm.set_theme(theme_name);
+    }
+
+    var zoomInButton = document.getElementById("zoom-in-button");
+    var zoomOutButton = document.getElementById("zoom-out-button");
+
+    function zoomIn() {
+        if (_jm.view.zoomIn()) {
+            zoomOutButton.disabled = false;
+        } else {
+            zoomInButton.disabled = true;
+        };
+    };
+
+    function zoomOut() {
+        if (_jm.view.zoomOut()) {
+            zoomInButton.disabled = false;
+        } else {
+            zoomOutButton.disabled = true;
+        };
+    };
+
+    function toggle_editable(btn){
+        var editable = _jm.get_editable();
+        if(editable){
+            _jm.disable_edit();
+            btn.innerHTML = 'enable editable';
+        }else{
+            _jm.enable_edit();
+            btn.innerHTML = 'disable editable';
+        }
+    }
+
+    function expand(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.expand_node(selected_id);
+    }
+
+    function collapse(){
+        var selected_id = get_selected_nodeid();
+        if(!selected_id){prompt_info('please select a node first.');return;}
+
+        _jm.collapse_node(selected_id);
+    }
+
+    function expand_all(){
+        _jm.expand_all();
+    }
+
+    function collapse_all(){
+        _jm.collapse_all();
+    }
+
+
+    function get_nodearray_data(){
+        var mind_data = _jm.get_data('node_array');
+        var mind_string = jsMind.util.json.json2string(mind_data);
+        prompt_info(mind_string);
+    }
+
+    function save_nodearray_file(){
+        var mind_data = _jm.get_data('node_array');
+        var mind_name = mind_data.meta.name;
+        var mind_str = jsMind.util.json.json2string(mind_data);
+        jsMind.util.file.save(mind_str,'text/jsmind',mind_name+'.jm');
+    }
+
+    function open_nodearray(){
+        var file_input = document.getElementById('file_input_nodearray');
+        var files = file_input.files;
+        if(files.length > 0){
+            var file_data = files[0];
+            jsMind.util.file.read(file_data,function(jsmind_data, jsmind_name){
+                var mind = jsMind.util.json.string2json(jsmind_data);
+                if(!!mind){
+                    _jm.show(mind);
+                }else{
+                    prompt_info('can not open this file as mindmap');
+                }
+            });
+        }else{
+            prompt_info('please choose a file first')
+        }
+    }
+
+    function prompt_info(msg){
+        alert(msg);
+    }
+
+    function getQueryVariable(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+    open_empty();
+    get_mind_json();
+</script>
+</body>
+</html>
+
+
+

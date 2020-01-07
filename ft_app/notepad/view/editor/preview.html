@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$article.title} - __WEB_NAME__ - __WEB_URL_HOSTNAME__</title>
+    <link rel="shortcut icon" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/css/layui.css"  type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  type="text/css">
+    <link rel="stylesheet" media="screen and (min-width:769px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main.css" type="text/css">
+    <link rel="stylesheet" media="screen and (max-width:768px)" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/css/main_mobile.css" type="text/css">
+    <link  rel="stylesheet" href="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/ui/oxide/content.min.css" type="text/css">
+</head>
+<body class="web-body-content">
+<!-- Header -->
+
+
+    <div class="layui-container article_detial" style="background-color: #fffFFF; margin-top: 20px;  width: 750px;">
+        <header>
+            <h1>{$article.title}</h1>
+        </header>
+
+        <div class="article_content" id="article_content_id" style="padding-bottom: 60px;">{$article.content}
+
+        </div>
+
+    </div>
+    <!-- Footer -->
+<!-- 你的HTML代码 END -->
+
+
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/tinymce/skins/content/default/prism.js"></script>
+<script src="__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__/plugins/layui/layui.js"></script>
+<script>
+    /* 一般直接写在一个js文件中 */
+    layui.use(['layer', 'form','util','element'], function(){
+        var layer = layui.layer
+            ,$=layui.jquery
+            ,form = layui.form
+            ,element = layui.element
+            ,util = layui.util;
+
+        /* 执行 */
+        util.fixbar({
+            top: true
+            ,showHeight:100
+            ,click: function(type){ }
+        });
+
+    });
+    
+
+</script>
+</body>
+</html>

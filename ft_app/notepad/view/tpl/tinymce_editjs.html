@@ -1,0 +1,60 @@
+{/* <script> */}
+this.height = document.body.clientHeight-110;
+tinymce.init({
+    selector: "textarea#article_container",
+    language:"zh_CN",
+    menubar: false,
+    encodieng: 'raw',
+    relative_urls: false,
+    toolbar_items_size: 'small',
+    branding: false,
+    toolbar_drawer: "floating",
+    typeahead_urls: false,
+    plugins: [
+        "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+        "searchreplace wordcount visualblocks visualchars code codesample fullscreen insertdatetime media nonbreaking",
+        "save table directionality emoticons template paste"
+    ],
+    toolbar: "formatselect | bold italic underline strikethrough | forecolor backcolor removeformat | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | codesample link emoticons image media print preview | code save",
+    mobile: {
+        language:"zh_CN",
+        plugins: [ 'autosave', 'lists', 'autolink' ],
+        toolbar: [ 'undo', 'bold', 'italic', 'styleselect' ]
+    },
+    setup : function(editor) {
+        editor.on('blur', function(e) {
+            tinyMCE_save();
+        });
+    },
+    height: this.height,
+    powerpaste_word_import: 'propmt',{/* 参数可以是propmt, merge, clear，效果自行切换对比 */}
+    powerpaste_html_import: 'merge',{/* propmt, merge, clear */}
+    powerpaste_allow_local_images: true,
+    paste_data_images: true,
+    save_onsavecallback: function () { tinyMCE_save(); },
+    images_upload_handler: function (blobInfo, success, failure) {
+    var formData = new FormData();
+    formData.append('file', blobInfo.blob(),blobInfo.filename());
+    $.ajax({
+        type : "post",
+        url : "{:url('Notepad/Editor/submitImage')}",
+        data : formData,
+        async: false,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success : function(res) {
+            if(res.status){
+                success('__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__/__STATIC__'+res.info);
+            }else{
+                layer.msg(res.info,{time:2500});
+            }
+        }
+    });
+},
+}).then( resolve=>{
+
+    tinyMCE_then();
+});
+
+{/* </script> */}

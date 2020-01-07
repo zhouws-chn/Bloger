@@ -3,6 +3,7 @@ namespace app\index\controller;
 
 use app\common\controller\UserController;
 use think\Session;
+use loveteemo\qqconnect\QC;
 class User extends UserController
 {
     public function myZone()
@@ -21,7 +22,7 @@ class User extends UserController
         }
         if(Session::has('uAdmin'))
         {
-            $this->redirect('Admin/myZone',array('tab'=>$tab_id));
+            $this->redirect('/index/Admin/myZone?tab='.$tab_id );
         }
 
         $this->assign('tab',(int)$tab_id);
@@ -57,30 +58,24 @@ class User extends UserController
         }
         // 密码验证
         $logicUser = \think\Loader::model('User','logic');
-        $vpRes = $logicUser->VertifyPasswd($passwd);
-        if( !$vpRes ) {
-            $data = ['status'=>false,'info'=>'密码错误'];
-            return json($data);
-        }
-
         // 更改密码
         if(strlen($npasswd)!=0){
-            $upRes = $logicUser->updatePasswd($npasswd);
+            $upRes = $logicUser->updatePasswd($passwd, $npasswd);
             if(!$upRes){
-                $data = ['status'=>false,'info'=>'密码修改失败'];
+                $data = ['status'=>false,'info'=>$upRes['info']];
                 return json($data);
             }
         }
         $uData['name'] = $uname;
         $uData['email'] = $uemail;
         $uData['description'] = $description;
-        $uuRes = $logicUser->updateUserData($uData);
+        $uuRes = $logicUser->updateUserData($passwd,$uData);
 
-        if($uuRes){
+        if($uuRes['status']){
             $data = ['status'=>true,'info'=>'资料修改成功'];
             return json($data);
         }else{
-            $data = ['status'=>false,'info'=>'资料修改失败'];
+            $data = ['status'=>false,'info'=>$uuRes['info']];
             return json($data);
         }
 
@@ -164,6 +159,67 @@ class User extends UserController
             $cate_index = $cate_index+1;
         }
         return json($data);
+    }
+
+    public function bingqq(){
+        // 去掉非post请求
+        if(!request()->isPost())
+        {
+            dump('error.');
+            die;
+        }
+        $uname = input('name');
+        $uemail = input('email');
+        $passwd = input("oPassword");
+        if(strlen($passwd)<6){
+            $data = ['status'=>false,'info'=>'密码格式错误'];
+            return json($data);
+        }
+        // 密码验证
+        $logicUser = \think\Loader::model('User','logic');
+        $vpRes = $logicUser->VertifyPasswd($passwd);
+        if( !$vpRes ) {
+            $data = ['status'=>false,'info'=>'密码错误'];
+            return json($data);
+        }
+        $qc = new QC();
+        Session::set('bingqq_time',time());
+        $data = ['status'=>true,'info'=>$qc->qq_login()];
+        return json($data);
+    }
+
+    public function bingQQ_cancel(){
+        // 去掉非post请求
+        if(!request()->isPost())
+        {
+            dump('error.');
+            die;
+        }
+        $uname = input('name');
+        $uemail = input('email');
+        $passwd = input("oPassword");
+        if(strlen($passwd)<6){
+            $data = ['status'=>false,'info'=>'密码格式错误'];
+            return json($data);
+        }
+        // 密码验证
+        $logicUser = \think\Loader::model('User','logic');
+        $vpRes = $logicUser->VertifyPasswd($passwd);
+        if( !$vpRes ) {
+            $data = ['status'=>false,'info'=>'密码错误'];
+            return json($data);
+        }
+        $user = \app\index\model\User::get(Session::get('uid'));
+        $user->qqopenid = null;
+        $res = $user->save();
+        if ($res){
+            $data = ['status'=>true,'info'=>'QQ绑定取消成功'];
+            return json($data);
+        }else{
+            $data = ['status'=>false,'info'=>'QQ绑定取消失败'];
+            return json($data);
+        }
+
     }
 
 

@@ -1,0 +1,46 @@
+{/* <script> */}
+table.render({
+    elem: '#article_list_filter'
+    ,url:"{:url('Lists/mindtablelists')}"
+    ,title: '文章管理表'
+    ,cols: [[
+        {type:'numbers', title:'序号', width:60}
+        ,{field:'title', minWidth:240, title:'标题'}
+        //,{field:'cate_name', title:'所属栏目', align:'center', width:150}
+        ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+        ,{field:'create_time', title:'创建时间',align:'center',templet :toCreateTimeString, width:160}
+        ,{field:'update_time', title:'修改时间',align:'center',templet :toUpdateTimeString, width:160}
+        ,{title:'操作', align:'center',toolbar: '#article_operaTools',width:170}
+    ]]
+    ,page: true
+    ,done: function(res, curr, count){
+        //tableFilterIns.reload();
+    }
+
+});
+table.on('toolbar(article_list_filter)', function(obj){
+    //window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Uarticle/editArticle')}";
+});
+
+table.on('tool(article_list_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'article_del'){
+        layer.confirm('确认删除此文章吗?<br />'+data['title'], function(index){
+            var jsondata = new Object({"id":data['id']});
+            $.post("{:url('notepad/mind/delete')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg('删除成功', {icon: 1});
+                    obj.del();
+                }else{
+                    layer.msg('删除失败', {icon: 2});
+                    layer.close(index);
+                }
+            });
+        });
+    } else if(obj.event === 'article_edit'){
+        window.location.href='/notepad/mind/update?id='+data['id'];
+    } else if(obj.event === 'article_pre'){
+        window.location.href='/notepad/mind/preview?id='+data['id'];
+    }
+});
+{/* </script> */}

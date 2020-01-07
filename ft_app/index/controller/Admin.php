@@ -179,7 +179,6 @@ class Admin extends AdminController
 
     public function system_info(){
         $users = \think\Loader::model('User')::order('create_time', 'desc')->select();
-        $data['webcreatetime'] = $users[0]->create_time;
         $usercount = \think\Loader::model('User')::order('create_time', 'desc')->count();
         $data['usercount'] = $usercount;
         $data['clientip'] = request()->ip();
@@ -188,9 +187,19 @@ class Admin extends AdminController
         $data['PHP_OS'] = php_uname();
         $data['SERVER_ADDR'] = $_SERVER['SERVER_ADDR'];
         $data['SERVER_NAME'] = $_SERVER['SERVER_NAME'];
-        $data['server_time'] =  date("Y-m-d H:i");
-
+        $data['server_time'] =  time();
+        $data['webcreatetime'] = time() - $users[0]->create_time;
         $this->assign('sysdata',$data);
         return $this->fetch("system_info");
+    }
+
+    public function logout(){
+        $logicUser = \think\Loader::model('User','logic');
+        $vaRes = $logicUser->AdminLogout();
+        if($vaRes){
+            return $this->success('管理员退出成功');
+        }else{
+            return $this->error('管理员退出失败');
+        }
     }
 }

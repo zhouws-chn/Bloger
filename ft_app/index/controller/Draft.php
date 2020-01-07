@@ -31,7 +31,7 @@ class Draft extends UserController
         $article['pv'] = 0;
         $article['update_time'] = $article['create_time'];
         $this->assign('article',$article);
-
+        $this->assign('replies',null);
         return $this->fetch('article/article');
     }
     /* 编辑草稿请求 */
@@ -103,6 +103,18 @@ class Draft extends UserController
             $data = ['status'=>false,'info'=>$res['msg']];
 
         }
+        return json($data);
+    }
+
+    public function draftcontent(){
+        $draft_id = input('id');
+        $article = \think\Loader::model('Draft')::get(['id'=>$draft_id],'cate');
+        if(!$article){
+            $data = ['status'=>false,'info'=>'文章不存在'];
+            return json($data);
+        }
+
+        $data = ['status'=>true,'info'=>$article['content']];
         return json($data);
     }
 

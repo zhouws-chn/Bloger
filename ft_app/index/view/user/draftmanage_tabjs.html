@@ -1,0 +1,59 @@
+{/* <script> */}
+table.render({
+    elem: '#drafts_filter'
+    ,url:"{:url('Draft/draftsLists')}"
+    ,title: '草稿箱'
+    ,toolbar: '#drafts_toolbar'
+    ,cols: [[
+        {type:'numbers', title:'序号', width:60}
+        ,{field:'title', minWidth:240, title:'标题'}
+        ,{field:'cate_name', title:'所属栏目', align:'center', width:150}
+        ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+        ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
+        ,{title:'操作', align:'center',toolbar: '#draft_operaTools',width:240}
+    ]]
+    ,page: true
+});
+tableFilter.render({
+    'elem' : '#drafts_filter',
+    'mode' : 'local',
+    'filters' : [{field: 'cate_name', type:'checkbox'},{field: 'title', type:'input'}]
+});
+table.on('toolbar(drafts_filter)', function(obj){
+    window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Uarticle/editArticle')}";
+});
+table.on('tool(drafts_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'draft_edit'){
+        window.location.href = "__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/editDraft')}?id="+data['id'];
+    } else if(obj.event === 'draft_del'){
+        layer.confirm('确认删除此草稿吗?<br />'+data['title'], function(index){
+            var jsondata = new Object({"id":data['id']});
+            $.post("{:url('Draft/delete')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg('删除成功', {icon: 1});
+                    obj.del();
+                }else{
+                    layer.msg('删除失败', {icon: 2});
+                    layer.close(index);
+                }
+            });
+        });
+    } else if(obj.event === 'draft_push'){
+        layer.confirm('确认发布吗?<br />'+data['title'], function(index){
+            var jsondata = new Object({"id":data['id']});
+            $.post("{:url('Draft/pushArticle')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg('发布成功', {icon: 1});
+                    obj.del();
+                }else{
+                    layer.msg('发布失败', {icon: 2});
+                    layer.close(index);
+                }
+            });
+        });
+    } else if(obj.event === 'draft_preview'){
+        window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Draft/previewDraft')}?id="+data['id']);
+    }
+});
+{/* </script> */}

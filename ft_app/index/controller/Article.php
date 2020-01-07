@@ -70,31 +70,6 @@ class Article extends BaseController
         }
     }
 
-    public function editArticle()
-    {
-        $this->LoginVerify();
-        return $this->fetch('editarticle');
-    }
-
-    public function updateArticle()
-    {
-        $this->LoginVerify();
-
-        // 去掉非get请求
-        if(!request()->isGet())
-        {
-            dump('error.');
-            die;
-        }
-        $article_id = input('id');
-        $article = \think\Loader::model('Article')::get(['id'=>$article_id]);
-        if(!$article) {
-            return $this->error('没有文章');
-        }
-        $this->assign('article',$article);
-        return $this->fetch('updatearticle');
-    }
-
     public function submitArticle()
     {
         $this->LoginVerify();
@@ -169,9 +144,9 @@ class Article extends BaseController
             $data = ['status'=>false,'info'=>'没有有效数据'];
             return json($data);
         }
-        $info = $file->validate(['size'=>2024000,'ext'=>'jpeg,jpg,png,gif'])->move(ROOT_PATH . 'public/static' . DS . 'uploads/images');//图片保存路径 最大2M
+        $info = $file->validate(['size'=>2024000,'ext'=>'jpeg,jpg,png,gif'])->move(ROOT_PATH . 'public/static' . DS . 'uploads/blogs/images');//图片保存路径 最大2M
         if ($info) {
-            $data = ['status'=>true,'info'=>$info->getSaveName()];
+            $data = ['status'=>true,'info'=>'/uploads/blogs/images/'.$info->getSaveName()];
         }else{
             $data = ['status'=>false,'info'=>$file->getError()];
         }
@@ -233,24 +208,5 @@ class Article extends BaseController
         }
         return json($data);
     }
-    public function delete()
-    {
-        $this->LoginVerify();
-        // 去掉非get请求
-        if(!request()->isPost())
-        {
-            dump('error.');
-            die;
-        }
 
-        $article_id = input('id');
-        $article = \think\Loader::model('Article')::get(['id'=>$article_id]);
-        $res = $article->delete();
-        if($res) {
-            $data = ['status'=>true,'info'=>'删除成功'];
-            return json($data);
-        }
-        $data = ['status'=>false,'info'=>'删除失败'];
-        return json($data);
-    }
 }

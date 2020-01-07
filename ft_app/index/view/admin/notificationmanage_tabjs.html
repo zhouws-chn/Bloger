@@ -1,0 +1,96 @@
+{/* <script> */}
+table.render({
+    elem: '#notes_filter'
+    ,url:"{:url('Notification/noteLists')}"
+    ,title: '公告管理表'
+    ,toolbar: '#note_toolbar'
+    ,cols: [[
+        {type:'numbers', title:'序号', width:60}
+        ,{field:'title', minWidth:100, title:'公告标题'}
+        ,{field:'status', title:'状态', width:104, templet: '#switchTpl', unresize: true}
+        ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+        ,{field:'create_time', title:'时间',templet: toTimeString,align:'center', width:110}
+        ,{title:'操作', align:'center',toolbar: '#note_operaTools',width:180}
+    ]]
+    ,page: true
+});
+
+table.on('tool(notes_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'note_del'){
+        layer.confirm('真的删除此公告吗?(删除后不可恢复)', function(index){
+
+            var jsondata = new Object({"id":data['id']});
+            $.post("{:url('Notification/delete')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg('删除成功', {icon: 1});
+                    obj.del();
+                }else{
+                    layer.msg('删除失败：'+res.info, {icon: 2});
+                }
+            });
+        });
+        layer.close(index);
+    } else if(obj.event === 'note_edit'){
+        layer.open({
+            type: 2,
+            title: '公告修改 - '+data['title'],
+            shadeClose: true,
+            shade: 0.8,
+            area: ['900px', '600px'],
+            content: "{:url('Notification/edit')}"+"?id="+data["id"]
+        });
+    } else if(obj.event === 'note_preview'){
+        window.open("__WEB_URL_PROTOCOL__//__WEB_URL_HOSTNAME__{:url('Notification/previewDraft')}?id="+data['id']);
+    }
+});
+
+
+table.on('toolbar(notes_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'note_add'){
+        layer.open({
+            type: 2,
+            title: '发布公告',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['900px', '600px'],
+            content: "{:url('Notification/add')}"
+        });
+    }
+});
+//监听锁定操作
+form.on('switch(note_sta)', function(obj){
+    var msg_sta = "";
+    if(obj.elem.checked == true ){
+        msg_sta = "发布";
+    }else{
+        msg_sta = "撤回";
+    }
+
+    layer.confirm("确定"+msg_sta+"公告?", function(index){
+        var jsondata = new Object();
+        jsondata['status'] = obj.elem.checked==true?1:0;
+        jsondata['id'] = obj.value;
+        var swt = $(obj.elem);
+        swt.prop('checked',false);
+
+        $.post("{:url('Notification/changesta')}",jsondata,function(res){
+            if(res.status) {
+                layer.msg(msg_sta+'成功', {icon: 1});
+
+            }else{
+                layer.msg(msg_sta+'失败:'+res.info, {icon: 2});
+                var swt = $(obj.elem);
+                swt.prop('checked',!obj.elem.checked);
+                layui.form.render();
+            }
+        });
+    },function (index) {
+        var swt = $(obj.elem);
+        swt.prop('checked',!obj.elem.checked);
+        layui.form.render();
+    });
+
+});
+{/* </script> */}

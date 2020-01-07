@@ -1,0 +1,33 @@
+{/* <script> */}
+table.render({
+    elem: '#reply_filter'
+    ,url:"{:url('reply/Lists')}"
+    ,title: '评论管理'
+    ,cols: [[
+        {type:'numbers', title:'序号', width:60}
+        ,{field:'content', minWidth:240, title:'内容'}
+        ,{field:'atitle', title:'所属文章标题', align:'center', width:320}
+        ,{field:'id', title:'Key',align:'center', width:60, hide: true}
+        ,{field:'create_time', title:'时间',align:'center',templet :toTimeString, width:110}
+        ,{title:'操作', align:'center',toolbar: '#reply_operaTools',width:80}
+    ]]
+    ,page: true
+});
+table.on('tool(reply_filter)', function(obj){
+    var data = obj.data;
+    if(obj.event === 'reply_del'){
+        layer.confirm('确认删除此评论吗?<br />'+data['content'], function(index){
+            var jsondata = new Object({"id":data['id']});
+            $.post("{:url('Reply/delete')}",jsondata,function(res){
+                if(res.status) {
+                    layer.msg('删除成功', {icon: 1});
+                    obj.del();
+                }else{
+                    layer.msg('删除失败', {icon: 2});
+                    layer.close(index);
+                }
+            });
+        });
+    }
+});
+{/* </script> */}
