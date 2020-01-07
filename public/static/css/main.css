@@ -233,6 +233,7 @@ margin: 1rem;
     margin-block-end: 1em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
+    word-break: break-word;
 }
 
 .article_detial .article_content h1,h2,h3,h4,h5,h6 {
