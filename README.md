@@ -22,7 +22,7 @@ ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PH
 
 系统首页
 
-![1](https://github.com/zhouws-chn/Bloger/blob/master/images/1.png)
+![1](https://raw.githubusercontent.com/zhouws-chn/Bloger/master/images/1.png)
 
 栏目目录
 
