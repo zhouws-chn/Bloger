@@ -22,35 +22,35 @@ ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PH
 
 系统首页
 
-![1](https://raw.githubusercontent.com/zhouws-chn/Bloger/master/images/1.png)
+![系统首页](https://github.com/zhouws-chn/Bloger/blob/master/images/1.png?raw=true)
 
 栏目目录
 
-![1](images\2.png)
+![栏目目录](https://github.com/zhouws-chn/Bloger/blob/master/images/2.png?raw=true)
 
 普通用户管理后台
 
-![1](images\3.png)
+![普通用户管理后台](https://github.com/zhouws-chn/Bloger/blob/master/images/3.png?raw=true)
 
 系统管理后台-文章管理界面
 
-![1](images\4.png)
+![系统管理后台-文章管理界面](https://github.com/zhouws-chn/Bloger/blob/master/images/4.png?raw=true)
 
 系统管理后台-网站公告界面
 
-![1](images\5.png)
+![系统管理后台-网站公告界面](https://github.com/zhouws-chn/Bloger/blob/master/images/5.png?raw=true)
 
 云笔记-文章界面
 
-![1](images\6.png)
+![云笔记-文章界面](https://github.com/zhouws-chn/Bloger/blob/master/images/6.png?raw=true)
 
 云笔记-思维导图绘制界面
 
-![1](images\7.png)
+![云笔记-思维导图绘制界面](https://github.com/zhouws-chn/Bloger/blob/master/images/7.png?raw=true)
 
 云笔记-笔记编辑界面
 
-![1](images\8.png)
+![云笔记-笔记编辑界面](https://github.com/zhouws-chn/Bloger/blob/master/images/8.png?raw=true)
 
 ## 安全须知
 
